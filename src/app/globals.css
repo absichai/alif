@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+:root {
+  --oasis: #133c33;
+  --journey: #f2662e;
+  --journey-text: #b84212;
+  --sand: #f7f4ee;
+  --surface: #ffffff;
+  --ink: #18201e;
+  --muted: #69736f;
+  --border: #dfe4e1;
+  --identity: #6553d8;
+  --home: #2d7bd9;
+  --success: #267a4a;
+  --warning: #9a5b00;
+  --error: #b42318;
+  --radius-card: 1.25rem;
+  --radius-control: 0.75rem;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--sand);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  background: var(--sand);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-manrope), var(--font-inter), ui-sans-serif, sans-serif;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 3px solid var(--journey);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
