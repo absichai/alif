@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+import { AssistantDrawer } from "@/components/assistant/assistant-drawer";
 import { AlifLogo } from "@/components/brand/alif-logo";
 
 export default async function AuthenticatedLayout({
@@ -26,6 +27,7 @@ export default async function AuthenticatedLayout({
         </div>
       </header>
       {children}
+      <AssistantDrawer />
     </div>
   );
 }

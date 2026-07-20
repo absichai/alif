@@ -48,4 +48,11 @@ export interface JourneyRepository {
     proposalId: string;
     status: "confirmed" | "rejected" | "expired";
   }): Promise<void>;
+  applyResidencyPathProposal(input: {
+    clerkUserId: string;
+    proposalId: string;
+    expectedJourneyVersion: number;
+    profile: RelocationProfile;
+    nextPlan: JourneyPlan;
+  }): Promise<StoredJourney>;
 }

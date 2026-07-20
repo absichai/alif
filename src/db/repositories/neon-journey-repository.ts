@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, gt } from "drizzle-orm";
 import { z } from "zod";
 
 import { getDb } from "@/db/client";
@@ -320,6 +320,85 @@ export class NeonJourneyRepository implements JourneyRepository {
         .set({ status: input.status })
         .where(eq(assistantProposals.id, owned.id));
     });
+  }
+
+  async applyResidencyPathProposal(
+    input: Parameters<JourneyRepository["applyResidencyPathProposal"]>[0],
+  ): Promise<StoredJourney> {
+    const db = getDb();
+
+    await db.transaction(async (tx) => {
+      const [owned] = await tx
+        .select({
+          proposal: assistantProposals,
+          journeyId: journeys.id,
+          userId: users.id,
+          journeyVersion: journeys.version,
+        })
+        .from(assistantProposals)
+        .innerJoin(journeys, eq(assistantProposals.journeyId, journeys.id))
+        .innerJoin(users, eq(journeys.userId, users.id))
+        .where(
+          and(
+            eq(assistantProposals.id, input.proposalId),
+            eq(assistantProposals.status, "pending"),
+            gt(assistantProposals.expiresAt, new Date()),
+            eq(journeys.status, "active"),
+            eq(journeys.version, input.expectedJourneyVersion),
+            eq(users.clerkUserId, input.clerkUserId),
+          ),
+        )
+        .limit(1);
+
+      if (!owned || owned.journeyVersion !== input.expectedJourneyVersion) {
+        throw new Error("Proposal is stale or unavailable");
+      }
+      const payload = proposalPayloadSchema.parse(owned.proposal.payload);
+      if (payload.residencyPath !== input.profile.residencyPath) {
+        throw new Error("Proposal is stale or unavailable");
+      }
+
+      await tx
+        .update(relocationProfiles)
+        .set({
+          residencyPath: input.profile.residencyPath,
+          updatedAt: new Date(),
+        })
+        .where(eq(relocationProfiles.userId, owned.userId));
+
+      await tx
+        .delete(journeySteps)
+        .where(eq(journeySteps.journeyId, owned.journeyId));
+      const rows = toJourneyStepRows(owned.journeyId, input.nextPlan);
+      if (rows.length > 0) await tx.insert(journeySteps).values(rows);
+
+      await tx
+        .update(journeys)
+        .set({
+          version: owned.journeyVersion + 1,
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(journeys.id, owned.journeyId),
+            eq(journeys.version, owned.journeyVersion),
+          ),
+        );
+
+      await tx
+        .update(assistantProposals)
+        .set({ status: "confirmed" })
+        .where(
+          and(
+            eq(assistantProposals.id, input.proposalId),
+            eq(assistantProposals.status, "pending"),
+          ),
+        );
+    });
+
+    const stored = await this.findActiveByClerkUserId(input.clerkUserId);
+    if (!stored) throw new Error("Updated journey could not be loaded");
+    return stored;
   }
 }
 
