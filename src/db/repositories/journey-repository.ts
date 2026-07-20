@@ -20,6 +20,7 @@ export type StoredProposal = {
 };
 
 export interface JourneyRepository {
+  deleteUserData(clerkUserId: string): Promise<void>;
   createOrReplace(input: {
     clerkUserId: string;
     profile: RelocationProfile;

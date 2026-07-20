@@ -3,10 +3,11 @@ import "server-only";
 import { neon } from "@neondatabase/serverless";
 import { drizzle } from "drizzle-orm/neon-http";
 
+import { getServerEnvironment } from "@/lib/env";
+
 import * as schema from "./schema";
 
 export function getDb() {
-  const url = process.env.DATABASE_URL;
-  if (!url) throw new Error("DATABASE_URL is not configured");
-  return drizzle(neon(url), { schema });
+  const { DATABASE_URL } = getServerEnvironment();
+  return drizzle(neon(DATABASE_URL), { schema });
 }

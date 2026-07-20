@@ -13,11 +13,15 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const content = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? (
+    <ClerkProvider>{children}</ClerkProvider>
+  ) : (
+    children
+  );
+
   return (
     <html lang="en" className={`${inter.variable} ${manrope.variable}`}>
-      <body>
-        <ClerkProvider>{children}</ClerkProvider>
-      </body>
+      <body>{content}</body>
     </html>
   );
 }

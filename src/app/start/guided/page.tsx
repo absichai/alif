@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -26,6 +27,7 @@ const blankProfile: RelocationProfileDraft = {
 };
 
 export default function GuidedOnboardingPage() {
+  const router = useRouter();
   const { state, setGuidedProfile } = useOnboardingFlow("guided");
   const [skipIncome, setSkipIncome] = useState(false);
 
@@ -49,7 +51,10 @@ export default function GuidedOnboardingPage() {
       incomeRange: skipIncome ? null : values.get("incomeRange") || null,
     });
 
-    if (parsed.success) setGuidedProfile(parsed.data);
+    if (parsed.success) {
+      setGuidedProfile(parsed.data);
+      router.push("/journey-ready");
+    }
   }
 
   return (

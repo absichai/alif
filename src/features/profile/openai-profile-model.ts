@@ -3,6 +3,8 @@ import "server-only";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 
+import { getServerEnvironment } from "@/lib/env";
+
 import type {
   ProfileExtractionInput,
   ProfileExtractionModel,
@@ -22,11 +24,11 @@ missing field it clearly addresses and preserve every already known value.
 `.trim();
 
 export class OpenAIProfileModel implements ProfileExtractionModel {
-  private readonly client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   async extract(input: ProfileExtractionInput) {
-    const response = await this.client.responses.parse({
-      model: process.env.OPENAI_MODEL ?? "gpt-5.6-terra",
+    const environment = getServerEnvironment();
+    const client = new OpenAI({ apiKey: environment.OPENAI_API_KEY });
+    const response = await client.responses.parse({
+      model: environment.OPENAI_MODEL,
       reasoning: { effort: "low" },
       input: [
         { role: "system", content: systemPrompt },

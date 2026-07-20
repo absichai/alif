@@ -3,6 +3,8 @@ import "server-only";
 import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 
+import { getServerEnvironment } from "@/lib/env";
+
 import {
   assistantModelOutputSchema,
   type AssistantModelOutput,
@@ -22,13 +24,13 @@ Return only the supplied schema.
 `.trim();
 
 export class OpenAIAssistantModel implements AssistantModel {
-  private readonly client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
   async respond(
     input: Parameters<AssistantModel["respond"]>[0],
   ): Promise<AssistantModelOutput> {
-    const response = await this.client.responses.parse({
-      model: process.env.OPENAI_MODEL ?? "gpt-5.6-terra",
+    const environment = getServerEnvironment();
+    const client = new OpenAI({ apiKey: environment.OPENAI_API_KEY });
+    const response = await client.responses.parse({
+      model: environment.OPENAI_MODEL,
       reasoning: { effort: "low" },
       input: [
         { role: "system", content: systemPrompt },

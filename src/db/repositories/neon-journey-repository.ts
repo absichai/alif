@@ -43,6 +43,11 @@ function mapProposal(row: typeof assistantProposals.$inferSelect): StoredProposa
 }
 
 export class NeonJourneyRepository implements JourneyRepository {
+  async deleteUserData(clerkUserId: string): Promise<void> {
+    const db = getDb();
+    await db.delete(users).where(eq(users.clerkUserId, clerkUserId));
+  }
+
   async createOrReplace(input: {
     clerkUserId: string;
     profile: RelocationProfile;

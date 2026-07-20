@@ -5,6 +5,7 @@ node_modules/
 coverage/
 playwright-report/
 test-results/
+playwright/.clerk/
 .env
 .env.local
 .env.*.local
