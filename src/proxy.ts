@@ -4,7 +4,7 @@ export default clerkMiddleware();
 
 export const config = {
   matcher: [
-    "/journey(.*)",
+    "/journey/:path*",
     "/profile(.*)",
     "/sign-in(.*)",
     "/sign-up(.*)",
