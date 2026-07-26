@@ -68,6 +68,31 @@ describe("buildJourney", () => {
     expect(unlockedBy(plan, "school_preparation")).toHaveLength(0);
   });
 
+  it("filters steps by stage applicability", () => {
+    const arrived = buildJourney(
+      { ...baseProfile, stage: "arrived" },
+      dubaiPack,
+      new Set(),
+    );
+
+    expect(arrived.stepIds).not.toContain("entry_residency_process");
+    expect(
+      buildJourney(baseProfile, dubaiPack, new Set()).stepIds,
+    ).toContain("entry_residency_process");
+  });
+
+  it("keeps prerequisite chains intact when a step filters out", () => {
+    const arrived = buildJourney(
+      { ...baseProfile, stage: "arrived" },
+      dubaiPack,
+      new Set(),
+    );
+    const medical = arrived.stepsById.medical_biometrics;
+
+    expect(medical).toBeDefined();
+    expect(medical?.blockedBy).not.toContain("entry_residency_process");
+  });
+
   it("rejects packs with dependency cycles", () => {
     const cyclic = {
       destinationCode: "AE-DXB",

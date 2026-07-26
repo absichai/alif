@@ -101,9 +101,15 @@ human while still giving users a concrete next action.
 
 ### What's next
 
+Since the first submission, ALIF has shipped document readiness tracking,
+a pack-owned setup-budget planner, weekly calendar reminders, profile
+editing with journey regeneration, and assistant proposals that cover the
+whole profile with a computed downstream effect.
+
 The next step is to validate the Dubai pack with relocation professionals and
 official-source reviews, then add carefully disclosed partners for services
-such as property search, insurance, document support, telecom, and schools.
+such as property search, insurance, document support, telecom, and schools,
+plus multilingual guidance starting with Arabic.
 
 Longer term, ALIF can expand through versioned destination packs for other
 cities while keeping the same journey engine, privacy model, and assistant

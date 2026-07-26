@@ -41,9 +41,15 @@ export default async function JourneyPage() {
             </strong>
             journey complete
           </p>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+          <div
+            aria-label="Journey progress"
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={percent}
+            className="mt-2 h-2 overflow-hidden rounded-full bg-white"
+            role="progressbar"
+          >
             <div
-              aria-hidden="true"
               className="h-full rounded-full bg-[var(--journey)]"
               style={{ width: `${percent}%` }}
             />
