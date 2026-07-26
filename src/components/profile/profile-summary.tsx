@@ -41,6 +41,14 @@ export function ProfileSummary({ profile }: { profile: RelocationProfile }) {
           ? "Yes"
           : "No",
     ],
+    [
+      "Moving with pets",
+      profile.preferences.hasPets === undefined
+        ? "Not decided"
+        : profile.preferences.hasPets
+          ? "Yes"
+          : "No",
+    ],
   ];
 
   return (

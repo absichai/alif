@@ -35,6 +35,7 @@ const emptyModelPatch: AssistantProfilePatch = {
   incomeRange: null,
   wantsToDrive: null,
   propertyRequiresDistrictCooling: null,
+  hasPets: null,
 };
 
 describe("toProfilePatch", () => {

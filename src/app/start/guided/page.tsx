@@ -50,6 +50,8 @@ export default function GuidedOnboardingPage() {
     if (cooling !== undefined) {
       preferences.propertyRequiresDistrictCooling = cooling;
     }
+    const hasPets = preferenceValue(values.get("hasPets"));
+    if (hasPets !== undefined) preferences.hasPets = hasPets;
 
     const parsed = profileDraftSchema.safeParse({
       ...blankProfile,
@@ -171,7 +173,7 @@ export default function GuidedOnboardingPage() {
 
           <fieldset className="grid gap-4">
             <legend className="font-bold">
-              Optional: two quick life preferences
+              Optional: a few quick life preferences
             </legend>
             <label>
               Planning to drive in Dubai?
@@ -189,6 +191,14 @@ export default function GuidedOnboardingPage() {
                 name="propertyRequiresDistrictCooling"
               >
                 <option value="unknown">Not known yet</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </label>
+            <label>
+              Moving with pets?
+              <select className={fieldClass} defaultValue="unknown" name="hasPets">
+                <option value="unknown">Not decided yet</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>

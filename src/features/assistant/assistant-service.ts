@@ -65,6 +65,10 @@ export function toProfilePatch(
       modelPatch.propertyRequiresDistrictCooling;
     preferencesChanged = true;
   }
+  if (modelPatch.hasPets !== null) {
+    preferences.hasPets = modelPatch.hasPets;
+    preferencesChanged = true;
+  }
   if (preferencesChanged) patch.preferences = preferences;
 
   return Object.keys(patch).length > 0 ? patch : null;
@@ -100,6 +104,11 @@ export function describePatch(patch: RelocationProfilePatch): string[] {
     if (patch.preferences.propertyRequiresDistrictCooling !== undefined) {
       lines.push(
         `District cooling at home → ${patch.preferences.propertyRequiresDistrictCooling ? "Yes" : "No"}`,
+      );
+    }
+    if (patch.preferences.hasPets !== undefined) {
+      lines.push(
+        `Moving with pets → ${patch.preferences.hasPets ? "Yes" : "No"}`,
       );
     }
   }

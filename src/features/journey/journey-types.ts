@@ -48,6 +48,7 @@ export const stepDefinitionSchema = z.object({
             "wantsToDrive",
             "needsSchools",
             "propertyRequiresDistrictCooling",
+            "hasPets",
           ]),
           value: z.boolean(),
         })

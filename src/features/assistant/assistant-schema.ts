@@ -18,6 +18,7 @@ export const assistantProfilePatchSchema = z.object({
   incomeRange: incomeRangeSchema.nullable(),
   wantsToDrive: z.boolean().nullable(),
   propertyRequiresDistrictCooling: z.boolean().nullable(),
+  hasPets: z.boolean().nullable(),
 });
 
 export type AssistantProfilePatch = z.infer<typeof assistantProfilePatchSchema>;

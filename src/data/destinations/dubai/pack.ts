@@ -4,9 +4,14 @@ import {
 } from "@/features/journey/journey-types";
 
 const verified = "2026-07-20";
+const verifiedJul26 = "2026-07-26";
 
-function official(organization: string, url: string) {
-  return { organization, url, lastVerifiedAt: verified };
+function official(
+  organization: string,
+  url: string,
+  lastVerifiedAt: string = verified,
+) {
+  return { organization, url, lastVerifiedAt };
 }
 
 const definitions: StepDefinition[] = [
@@ -69,6 +74,56 @@ const definitions: StepDefinition[] = [
       "https://www.mofa.gov.ae/en-us/services/documents-attestation",
     ),
     serviceType: null,
+  },
+  {
+    id: "shipping_household_goods",
+    milestoneKey: "prepare_documents",
+    phase: "before_move",
+    category: "planning",
+    title: "Plan how your belongings reach Dubai",
+    summary: "Compare shipping options, timelines, and customs expectations early.",
+    whyItMatters:
+      "Sea and air freight lead times often decide what travels with you and what follows.",
+    prerequisites: ["residency_route"],
+    applicability: {},
+    officialSource: official(
+      "Dubai Customs",
+      "https://www.dubaicustoms.gov.ae/en/Pages/default.aspx",
+      verifiedJul26,
+    ),
+    serviceType: "International moving and customs support",
+  },
+  {
+    id: "pet_relocation",
+    milestoneKey: "prepare_documents",
+    phase: "before_move",
+    category: "family_daily_life",
+    title: "Prepare your pet's relocation",
+    summary: "Check import permits, vaccinations, and travel arrangements for pets.",
+    whyItMatters:
+      "Animal import approvals and vaccination windows need lead time before travel.",
+    prerequisites: ["residency_route"],
+    applicability: { preference: { key: "hasPets", value: true } },
+    officialSource: official(
+      "UAE Ministry of Climate Change and Environment",
+      "https://www.moccae.gov.ae/en/home.aspx",
+      verifiedJul26,
+    ),
+    serviceType: "Pet relocation support",
+  },
+  {
+    id: "arrival_accommodation",
+    milestoneKey: "land_confidently",
+    phase: "arrival",
+    category: "home",
+    title: "Book a landing base for your first weeks",
+    summary: "Arrange short-term accommodation while you search for a long-term home.",
+    whyItMatters:
+      "A settled first base removes pressure from the housing search and early paperwork.",
+    prerequisites: ["move_budget"],
+    applicability: {},
+    officialSource: null,
+    serviceType: "Short-stay accommodation",
   },
   {
     id: "entry_residency_process",
@@ -291,6 +346,42 @@ const definitions: StepDefinition[] = [
     serviceType: null,
   },
   {
+    id: "nol_card",
+    milestoneKey: "money_mobility",
+    phase: "first_month",
+    category: "money_mobility",
+    title: "Get a Nol card for public transport",
+    summary: "Use one card across the metro, trams, buses, and water transport.",
+    whyItMatters:
+      "Public transport keeps you mobile while longer-term transport choices settle.",
+    prerequisites: ["mobility_choice"],
+    applicability: {},
+    officialSource: official(
+      "Roads and Transport Authority",
+      "https://www.rta.ae/wps/portal/rta/ae/public-transport/nol",
+      verifiedJul26,
+    ),
+    serviceType: null,
+  },
+  {
+    id: "salik_toll",
+    milestoneKey: "money_mobility",
+    phase: "first_month",
+    category: "money_mobility",
+    title: "Set up road-toll coverage before driving",
+    summary: "Understand how Dubai's automatic toll gates connect to your vehicle.",
+    whyItMatters:
+      "Registered toll coverage avoids fines once you drive your own or a rented car.",
+    prerequisites: ["mobility_choice"],
+    applicability: { preference: { key: "wantsToDrive", value: true } },
+    officialSource: official(
+      "UAE Government",
+      "https://u.ae/en/information-and-services/transportation",
+      verifiedJul26,
+    ),
+    serviceType: null,
+  },
+  {
     id: "family_sponsorship",
     milestoneKey: "family_arrival",
     phase: "feeling_home",
@@ -323,10 +414,60 @@ const definitions: StepDefinition[] = [
     ),
     serviceType: "School-admissions support",
   },
+  {
+    id: "school_enrollment",
+    milestoneKey: "family_arrival",
+    phase: "feeling_home",
+    category: "family_daily_life",
+    title: "Complete the school enrollment",
+    summary: "Confirm places, submit documents, and plan the first school days.",
+    whyItMatters:
+      "Enrollment closes the loop between housing choice, documents, and daily routine.",
+    prerequisites: ["school_preparation", "housing_search"],
+    applicability: { minimumChildren: 1 },
+    officialSource: official(
+      "KHDA",
+      "https://web.khda.gov.ae/en/education-directory/schools",
+    ),
+    serviceType: "School-admissions support",
+  },
+  {
+    id: "dependents_health_insurance",
+    milestoneKey: "family_arrival",
+    phase: "feeling_home",
+    category: "family_daily_life",
+    title: "Cover every family member with health insurance",
+    summary: "Arrange compliant coverage for each sponsored family member.",
+    whyItMatters:
+      "Dependent residence processing generally expects valid health coverage.",
+    prerequisites: ["family_sponsorship"],
+    applicability: { marriedOnly: true },
+    officialSource: official(
+      "Dubai Health Authority",
+      "https://dha.gov.ae/en/dubai-health-insurance-corporation",
+      verifiedJul26,
+    ),
+    serviceType: "Health insurance",
+  },
+  {
+    id: "community_belonging",
+    milestoneKey: "feeling_at_home",
+    phase: "feeling_home",
+    category: "family_daily_life",
+    title: "Build your Dubai routines and community",
+    summary:
+      "Explore your neighborhood, find your regular places, and meet people.",
+    whyItMatters:
+      "Settling ends when the city feels familiar, not when the paperwork does.",
+    prerequisites: ["mobility_choice"],
+    applicability: {},
+    officialSource: null,
+    serviceType: null,
+  },
 ];
 
 export const dubaiPack = destinationPackSchema.parse({
   destinationCode: "AE-DXB",
-  version: "2026-07-20.1",
+  version: "2026-07-26.1",
   definitions,
 });

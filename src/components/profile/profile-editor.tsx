@@ -50,6 +50,8 @@ export function ProfileEditor({ profile }: { profile: RelocationProfile }) {
     if (wantsToDrive !== undefined) preferences.wantsToDrive = wantsToDrive;
     const cooling = fromTriState(values.get("propertyRequiresDistrictCooling"));
     if (cooling !== undefined) preferences.propertyRequiresDistrictCooling = cooling;
+    const hasPets = fromTriState(values.get("hasPets"));
+    if (hasPets !== undefined) preferences.hasPets = hasPets;
 
     const parsed = profilePatchSchema.safeParse({
       stage: values.get("stage"),
@@ -265,6 +267,18 @@ export function ProfileEditor({ profile }: { profile: RelocationProfile }) {
             name="propertyRequiresDistrictCooling"
           >
             <option value="unknown">Not known yet</option>
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+        <label>
+          Moving with pets?
+          <select
+            className={fieldClass}
+            defaultValue={toTriState(profile.preferences.hasPets)}
+            name="hasPets"
+          >
+            <option value="unknown">Not decided yet</option>
             <option value="yes">Yes</option>
             <option value="no">No</option>
           </select>

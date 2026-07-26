@@ -25,6 +25,7 @@ export const profilePreferencesSchema = z.object({
   wantsToDrive: z.boolean().optional(),
   needsSchools: z.boolean().optional(),
   propertyRequiresDistrictCooling: z.boolean().optional(),
+  hasPets: z.boolean().optional(),
 });
 
 export const profileDraftSchema = z.object({
