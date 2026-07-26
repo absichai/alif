@@ -1,6 +1,7 @@
 import {
   CalendarCheck,
   ExternalLink,
+  FileCheck,
   KeyRound,
   LockKeyhole,
   Sparkles,
@@ -101,6 +102,23 @@ export function MilestoneDetail({
                       <span>
                         <strong>Unlocks:</strong>{" "}
                         {unlocks.map((item) => item.title).join(" · ")}
+                      </span>
+                    </p>
+                  ) : null}
+                  {step.requiredDocuments.length > 0 ? (
+                    <p className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[var(--muted)]">
+                      <FileCheck aria-hidden size={16} />
+                      <span>
+                        <strong>Documents:</strong>{" "}
+                        {step.requiredDocuments
+                          .map((document) => document.label)
+                          .join(" · ")}{" "}
+                        <Link
+                          className="underline decoration-dotted underline-offset-4"
+                          href="/journey/documents"
+                        >
+                          Track readiness
+                        </Link>
                       </span>
                     </p>
                   ) : null}

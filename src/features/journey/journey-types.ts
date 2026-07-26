@@ -63,6 +63,15 @@ export const stepDefinitionSchema = z.object({
     })
     .nullable(),
   serviceType: z.string().nullable().default(null),
+  requiredDocuments: z
+    .array(
+      z.object({
+        key: z.string().regex(/^[a-z0-9_]+$/),
+        label: z.string().min(3),
+        note: z.string().optional(),
+      }),
+    )
+    .default([]),
 });
 
 export const destinationPackSchema = z.object({
@@ -72,6 +81,7 @@ export const destinationPackSchema = z.object({
 });
 
 export type StepDefinition = z.infer<typeof stepDefinitionSchema>;
+export type StepDefinitionInput = z.input<typeof stepDefinitionSchema>;
 export type DestinationPack = z.infer<typeof destinationPackSchema>;
 export type JourneyStepState = "completed" | "current" | "available" | "blocked";
 

@@ -21,6 +21,7 @@ export default async function AuthenticatedLayout({
           </Link>
           <nav aria-label="Primary" className="flex items-center gap-5 text-sm font-bold">
             <Link href="/journey">Journey</Link>
+            <Link href="/journey/documents">Documents</Link>
             <Link href="/profile">Profile</Link>
             <UserButton />
           </nav>

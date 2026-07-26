@@ -1,6 +1,6 @@
 import {
   destinationPackSchema,
-  type StepDefinition,
+  type StepDefinitionInput,
 } from "@/features/journey/journey-types";
 
 const verified = "2026-07-20";
@@ -14,7 +14,7 @@ function official(
   return { organization, url, lastVerifiedAt };
 }
 
-const definitions: StepDefinition[] = [
+const definitions: StepDefinitionInput[] = [
   {
     id: "residency_route",
     milestoneKey: "define_route",
@@ -73,6 +73,13 @@ const definitions: StepDefinition[] = [
       "UAE Ministry of Foreign Affairs",
       "https://www.mofa.gov.ae/en-us/services/documents-attestation",
     ),
+    requiredDocuments: [
+      {
+        key: "attested_degree",
+        label: "Attested education certificate",
+        note: "Commonly requested on employment residency routes.",
+      },
+    ],
     serviceType: null,
   },
   {
@@ -109,6 +116,12 @@ const definitions: StepDefinition[] = [
       "https://www.moccae.gov.ae/en/home.aspx",
       verifiedJul26,
     ),
+    requiredDocuments: [
+      {
+        key: "pet_vaccination_records",
+        label: "Pet vaccination records and health certificate",
+      },
+    ],
     serviceType: "Pet relocation support",
   },
   {
@@ -136,6 +149,10 @@ const definitions: StepDefinition[] = [
     prerequisites: ["residency_route", "document_attestation"],
     applicability: { stages: ["exploring", "preparing"] },
     officialSource: official("GDRFA Dubai", "https://gdrfad.gov.ae/en"),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+      { key: "passport_photos", label: "Recent passport photos" },
+    ],
     serviceType: null,
   },
   {
@@ -153,6 +170,9 @@ const definitions: StepDefinition[] = [
       "UAE Government",
       "https://u.ae/en/information-and-services/visa-and-emirates-id/Visa-information/general-provisions-for-the-residence-visa",
     ),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+    ],
     serviceType: null,
   },
   {
@@ -169,6 +189,9 @@ const definitions: StepDefinition[] = [
       "ICP",
       "https://icp.gov.ae/en/services/interactive-services/",
     ),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+    ],
     serviceType: null,
   },
   {
@@ -214,6 +237,9 @@ const definitions: StepDefinition[] = [
       "Dubai Land Department",
       "https://dubailand.gov.ae/media/wzfpke5h/tenancyguideen.pdf",
     ),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+    ],
     serviceType: "Tenancy review",
   },
   {
@@ -231,6 +257,10 @@ const definitions: StepDefinition[] = [
       "Dubai Land Department",
       "https://dubailand.gov.ae/en/eservices/register-renew-ejari-contract/",
     ),
+    requiredDocuments: [
+      { key: "signed_tenancy_contract", label: "Signed tenancy contract" },
+      { key: "emirates_id_card", label: "Emirates ID card" },
+    ],
     serviceType: null,
   },
   {
@@ -247,6 +277,9 @@ const definitions: StepDefinition[] = [
       "DEWA",
       "https://www.dewa.gov.ae/en/about-us/service-guide/consumer-services/move-in",
     ),
+    requiredDocuments: [
+      { key: "ejari_certificate", label: "Ejari registration certificate" },
+    ],
     serviceType: null,
   },
   {
@@ -301,6 +334,15 @@ const definitions: StepDefinition[] = [
     prerequisites: ["emirates_id"],
     applicability: {},
     officialSource: null,
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+      { key: "residence_visa", label: "Residence visa" },
+      { key: "emirates_id_card", label: "Emirates ID card" },
+      {
+        key: "salary_certificate",
+        label: "Salary certificate or proof of income",
+      },
+    ],
     serviceType: "UAE-licensed bank",
   },
   {
@@ -343,6 +385,10 @@ const definitions: StepDefinition[] = [
       "Roads and Transport Authority",
       "https://www.rta.ae/wps/portal/rta/ae/home/rta-services/service-details?serviceId=617",
     ),
+    requiredDocuments: [
+      { key: "home_country_licence", label: "Home-country driving licence" },
+      { key: "emirates_id_card", label: "Emirates ID card" },
+    ],
     serviceType: null,
   },
   {
@@ -396,6 +442,22 @@ const definitions: StepDefinition[] = [
       "UAE Government",
       "https://u.ae/en/information-and-services/visa-and-emirates-id/Visa-information/general-provisions-for-the-residence-visa",
     ),
+    requiredDocuments: [
+      {
+        key: "attested_marriage_certificate",
+        label: "Attested marriage certificate",
+      },
+      {
+        key: "attested_birth_certificates",
+        label: "Attested children's birth certificates",
+        note: "One for each sponsored child.",
+      },
+      { key: "ejari_certificate", label: "Ejari registration certificate" },
+      {
+        key: "salary_certificate",
+        label: "Salary certificate or proof of income",
+      },
+    ],
     serviceType: "Licensed immigration support",
   },
   {
@@ -429,6 +491,14 @@ const definitions: StepDefinition[] = [
       "KHDA",
       "https://web.khda.gov.ae/en/education-directory/schools",
     ),
+    requiredDocuments: [
+      {
+        key: "attested_birth_certificates",
+        label: "Attested children's birth certificates",
+      },
+      { key: "immunization_records", label: "Children's immunization records" },
+      { key: "school_reports", label: "Previous school reports" },
+    ],
     serviceType: "School-admissions support",
   },
   {

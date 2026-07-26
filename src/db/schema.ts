@@ -121,6 +121,31 @@ export const assistantProposals = pgTable(
   (table) => [index("assistant_proposals_journey_idx").on(table.journeyId)],
 );
 
+export const documentStatus = pgEnum("document_status", [
+  "not_started",
+  "in_progress",
+  "ready",
+]);
+
+export const documentChecks = pgTable(
+  "document_checks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    documentKey: text("document_key").notNull(),
+    status: documentStatus("status").notNull().default("not_started"),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    uniqueIndex("document_checks_user_document_uq").on(
+      table.userId,
+      table.documentKey,
+    ),
+  ],
+);
+
 export const rateLimits = pgTable("rate_limits", {
   keyHash: text("key_hash").primaryKey(),
   windowStartedAt: timestamp("window_started_at", { withTimezone: true }).notNull(),
