@@ -34,10 +34,10 @@ export function MilestoneDetail({
 }) {
   return (
     <section>
-      <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
         {milestone.phase.replaceAll("_", " ")}
       </p>
-      <h1 className="mt-2 text-4xl font-extrabold">{milestone.title}</h1>
+      <h1 className="mt-2 text-4xl font-semibold">{milestone.title}</h1>
       <p className="mt-4 max-w-2xl text-lg leading-8 text-[var(--muted)]">
         Work through this chapter in order. ALIF will open dependent steps as
         their foundations are completed.
@@ -60,18 +60,18 @@ export function MilestoneDetail({
                 <div className="max-w-2xl">
                   <div className="flex items-center gap-2">
                     <span
-                      className={`rounded-full px-3 py-1 text-xs font-extrabold uppercase ${
+                      className={`rounded-full px-3 py-1 text-xs font-semibold uppercase ${
                         step.state === "completed"
-                          ? "bg-[#e8f3ee] text-[var(--success)]"
+                          ? "bg-[#e7f6ee] text-[var(--success)]"
                           : step.state === "blocked"
                             ? "bg-[var(--sand)] text-[var(--muted)]"
-                            : "bg-[#fff0e9] text-[var(--journey-text)]"
+                            : "bg-[#eaf0ff] text-[var(--journey-text)]"
                       }`}
                     >
                       {stateLabels[step.state]}
                     </span>
                   </div>
-                  <h2 className="mt-4 text-xl font-extrabold">{step.title}</h2>
+                  <h2 className="mt-4 text-xl font-semibold">{step.title}</h2>
                   <p className="mt-2 leading-7 text-[var(--muted)]">{step.summary}</p>
                   <p className="mt-4 text-sm leading-6">
                     <strong>Why it matters:</strong> {step.whyItMatters}

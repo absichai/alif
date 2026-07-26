@@ -31,10 +31,10 @@ export default async function DocumentsPage() {
       </Link>
       <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
             Document readiness
           </p>
-          <h1 className="mt-2 text-4xl font-extrabold">
+          <h1 className="mt-2 text-4xl font-semibold">
             Papers your journey will ask for
           </h1>
           <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">
@@ -66,7 +66,7 @@ export default async function DocumentsPage() {
             >
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="max-w-xl">
-                  <h2 className="text-lg font-extrabold">{document.label}</h2>
+                  <h2 className="text-lg font-semibold">{document.label}</h2>
                   {document.note ? (
                     <p className="mt-1 text-sm text-[var(--muted)]">
                       {document.note}

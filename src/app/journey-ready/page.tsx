@@ -39,10 +39,10 @@ export default function JourneyReadyPage() {
       <AlifLogo />
       <div className="my-auto grid items-center gap-10 py-16 md:grid-cols-[1.2fr_0.8fr]">
         <div>
-          <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[var(--journey-text)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--journey-text)]">
             Your context is complete
           </p>
-          <h1 className="mt-4 text-5xl font-extrabold leading-tight">
+          <h1 className="mt-4 text-5xl font-semibold leading-tight">
             Your Dubai journey is ready to be created.
           </h1>
           <p className="mt-5 max-w-xl text-lg leading-8 text-[var(--muted)]">
@@ -60,13 +60,13 @@ export default function JourneyReadyPage() {
           </p>
         </div>
         <Card>
-          <p className="text-sm font-extrabold uppercase tracking-[0.15em] text-[var(--muted)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.15em] text-[var(--muted)]">
             Inside your journey
           </p>
           <ul className="mt-6 grid gap-5">
             {benefits.map((benefit) => (
               <li className="flex items-center gap-3 font-bold" key={benefit}>
-                <span className="grid size-9 place-items-center rounded-full bg-[#e8f3ee] text-[var(--success)]">
+                <span className="grid size-9 place-items-center rounded-full bg-[#e7f6ee] text-[var(--success)]">
                   <Check aria-hidden="true" size={18} />
                 </span>
                 {benefit}

@@ -35,10 +35,10 @@ export default async function BudgetPage() {
         ← Back to journey
       </Link>
       <div className="mt-8">
-        <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+        <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
           Setup budget
         </p>
-        <h1 className="mt-2 text-4xl font-extrabold">
+        <h1 className="mt-2 text-4xl font-semibold">
           What settling in may cost
         </h1>
         <p className="mt-4 max-w-2xl leading-7 text-[var(--muted)]">
@@ -51,18 +51,18 @@ export default async function BudgetPage() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <div className="rounded-[var(--radius-card)] border border-[var(--border)] bg-white p-6">
-          <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--muted)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
             Whole journey
           </p>
-          <p className="mt-2 text-2xl font-extrabold">
+          <p className="mt-2 text-2xl font-semibold">
             {formatAedRange(summary.total.minAed, summary.total.maxAed)}
           </p>
         </div>
         <div className="rounded-[var(--radius-card)] border border-[var(--border)] bg-white p-6">
-          <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--muted)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
             Still ahead of you
           </p>
-          <p className="mt-2 text-2xl font-extrabold text-[var(--journey-text)]">
+          <p className="mt-2 text-2xl font-semibold text-[var(--journey-text)]">
             {formatAedRange(summary.remaining.minAed, summary.remaining.maxAed)}
           </p>
           <p className="mt-1 text-sm text-[var(--muted)]">
@@ -87,10 +87,10 @@ export default async function BudgetPage() {
             key={phase.phase}
           >
             <div className="flex flex-wrap items-baseline justify-between gap-3">
-              <h2 className="text-xl font-extrabold">
+              <h2 className="text-xl font-semibold">
                 {phaseLabels[phase.phase]}
               </h2>
-              <p className="font-extrabold text-[var(--journey-text)]">
+              <p className="font-semibold text-[var(--journey-text)]">
                 {formatAedRange(phase.minAed, phase.maxAed)}
               </p>
             </div>

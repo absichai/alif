@@ -27,10 +27,10 @@ export default async function JourneyPage() {
     <main className="mx-auto max-w-4xl px-5 py-10">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
             Your Dubai story
           </p>
-          <h1 className="mt-2 text-4xl font-extrabold">
+          <h1 className="mt-2 text-4xl font-semibold">
             From exploring to feeling at home
           </h1>
         </div>

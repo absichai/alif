@@ -5,20 +5,25 @@ test("visitor reaches the no-leak account gate", async ({ page }) => {
   await page.getByRole("link", { name: /Build my Dubai journey/ }).click();
   await page.getByRole("link", { name: "Guide me step by step" }).click();
 
-  await page
-    .getByLabel("1. Where are you in your Dubai journey?")
-    .selectOption("exploring");
-  await page
-    .getByLabel("2. When are you hoping to move?")
-    .fill("Within six months");
-  await page
-    .getByLabel("4. How do you expect to obtain UAE residency?")
-    .selectOption("unknown");
-  await page
-    .getByLabel("5. Which country issued your passport?")
-    .fill("France");
-  await page.getByRole("button", { name: "Skip this" }).click();
-  await page.getByRole("button", { name: "Create my journey draft" }).click();
+  await page.getByRole("button", { name: /Exploring the idea/ }).click();
+  await page.getByRole("button", { name: "In 3–6 months" }).click();
+  await page.getByRole("button", { name: "Just me" }).click();
+  await page.getByRole("button", { name: "None", exact: true }).click();
+
+  // Single households skip the move-together question entirely.
+  await expect(
+    page.getByRole("heading", {
+      name: "How do you expect to get UAE residency?",
+    }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: /I'm not sure yet/ }).click();
+
+  await page.getByLabel("Which country issued your passport?").fill("France");
+  await page.getByRole("button", { name: /Continue/ }).click();
+
+  await page.getByRole("button", { name: "Not decided yet" }).click();
+  await page.getByRole("button", { name: "Not decided yet" }).click();
+  await page.getByRole("button", { name: "Prefer not to say" }).click();
 
   await expect(
     page.getByRole("heading", {
@@ -39,34 +44,45 @@ test("guided onboarding collects household and life preferences", async ({
 }) => {
   await page.goto("/start/guided");
 
-  await page
-    .getByLabel("1. Where are you in your Dubai journey?")
-    .selectOption("preparing");
-  await page
-    .getByLabel("2. When are you hoping to move?")
-    .fill("This September");
+  await page.getByRole("button", { name: /Preparing to move/ }).click();
+  await page.getByRole("button", { name: "Within 3 months" }).click();
+  await page.getByRole("button", { name: "Me and my spouse" }).click();
+  await page.getByRole("button", { name: "2", exact: true }).click();
 
-  // The move-together question appears only after choosing married.
-  await expect(page.getByLabel("Will everyone move together?")).toHaveCount(0);
-  await page.getByLabel("Relationship status").selectOption("married");
-  await page.getByLabel("Will everyone move together?").selectOption("together");
-  await page.getByLabel("Number of children moving").fill("2");
+  // The move-together question appears only for married households.
+  await expect(
+    page.getByRole("heading", {
+      name: "Will everyone move at the same time?",
+    }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "We move together" }).click();
 
-  await page
-    .getByLabel("4. How do you expect to obtain UAE residency?")
-    .selectOption("employment");
-  await page
-    .getByLabel("5. Which country issued your passport?")
-    .fill("Morocco");
-  await page.getByLabel("Planning to drive in Dubai?").selectOption("yes");
-  await page.getByLabel("Moving with pets?").selectOption("yes");
-  await page.getByRole("button", { name: "Skip this" }).click();
-  await page.getByRole("button", { name: "Create my journey draft" }).click();
+  await page.getByRole("button", { name: /Through my job/ }).click();
+  await page.getByLabel("Which country issued your passport?").fill("Morocco");
+  await page.getByRole("button", { name: /Continue/ }).click();
+
+  await page.getByRole("button", { name: "Yes", exact: true }).click();
+  await page.getByRole("button", { name: "Yes", exact: true }).click();
+  await page.getByRole("button", { name: "20,000–34,999" }).click();
 
   await expect(
     page.getByRole("heading", {
       name: "Your Dubai journey is ready to be created.",
     }),
+  ).toBeVisible();
+});
+
+test("stepper supports going back without losing the flow", async ({ page }) => {
+  await page.goto("/start/guided");
+
+  await page.getByRole("button", { name: /Exploring the idea/ }).click();
+  await expect(
+    page.getByRole("heading", { name: "When are you hoping to move?" }),
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Back" }).click();
+  await expect(
+    page.getByRole("heading", { name: "Where are you in your Dubai journey?" }),
   ).toBeVisible();
 });
 

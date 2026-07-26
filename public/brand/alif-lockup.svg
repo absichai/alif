@@ -2,11 +2,11 @@
   <title id="title">ALIF logo</title>
   <desc id="desc">The ALIF journey mark beside the ALIF wordmark.</desc>
   <g>
-    <circle cx="16" cy="103" r="6" fill="#133C33"/>
+    <circle cx="16" cy="103" r="6" fill="#101828"/>
     <path
       d="M22 103C45 103 61 96 67 82C70 75 70 67 70 57V39C70 35 72 32 76 30L87 25"
       fill="none"
-      stroke="#133C33"
+      stroke="#101828"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="10"
@@ -14,7 +14,7 @@
     <path
       d="M87 25L108 16V77C108 94 99 103 85 103"
       fill="none"
-      stroke="#F2662E"
+      stroke="#2E6BFF"
       stroke-linecap="round"
       stroke-linejoin="round"
       stroke-width="10"

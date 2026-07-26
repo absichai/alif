@@ -17,7 +17,7 @@ import {
 import { ProfileSummary } from "./profile-summary";
 
 const fieldClass =
-  "mt-2 min-h-12 w-full rounded-xl border border-[var(--border)] bg-[#fcfbf8] px-4 py-3";
+  "mt-2 min-h-12 w-full rounded-xl border border-[var(--border)] bg-[#f8fafd] px-4 py-3";
 
 type TriState = "unknown" | "yes" | "no";
 

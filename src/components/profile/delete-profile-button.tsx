@@ -31,7 +31,7 @@ export function DeleteProfileButton() {
 
   return (
     <section className="mt-12 rounded-[var(--radius-card)] border border-red-200 bg-red-50 p-6">
-      <h2 className="text-xl font-extrabold text-[var(--error)]">
+      <h2 className="text-xl font-semibold text-[var(--error)]">
         Delete ALIF journey data
       </h2>
       <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted)]">

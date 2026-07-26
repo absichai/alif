@@ -55,7 +55,7 @@ export function ProfileSummary({ profile }: { profile: RelocationProfile }) {
     <dl className="mt-8 grid overflow-hidden rounded-[var(--radius-card)] border border-[var(--border)] bg-white sm:grid-cols-2">
       {items.map(([label, value]) => (
         <div className="border-b border-[var(--border)] p-5 last:border-b-0 sm:odd:border-r" key={label}>
-          <dt className="text-xs font-extrabold uppercase tracking-[0.12em] text-[var(--muted)]">
+          <dt className="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--muted)]">
             {label}
           </dt>
           <dd className="mt-2 font-bold">{value}</dd>

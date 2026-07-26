@@ -19,10 +19,10 @@ export default function StoryOnboardingPage() {
   return (
     <OnboardingShell eyebrow="Your story">
       <div className="mt-14 max-w-2xl">
-        <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[var(--journey-text)]">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--journey-text)]">
           Start in your own words
         </p>
-        <h1 className="mt-3 text-4xl font-extrabold md:text-5xl">
+        <h1 className="mt-3 text-4xl font-semibold md:text-5xl">
           Tell ALIF where life is taking you.
         </h1>
         <p className="mt-4 text-lg leading-8 text-[var(--muted)]">
@@ -38,7 +38,7 @@ export default function StoryOnboardingPage() {
             moving with you. Share only what you are comfortable sharing.
           </label>
           <textarea
-            className="mt-4 min-h-48 w-full resize-y rounded-xl border border-[var(--border)] bg-[#fcfbf8] p-4 text-base leading-7"
+            className="mt-4 min-h-48 w-full resize-y rounded-xl border border-[var(--border)] bg-[#f8fafd] p-4 text-base leading-7"
             id="relocation-story"
             maxLength={5000}
             minLength={20}

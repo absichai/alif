@@ -5,6 +5,7 @@ import Link from "next/link";
 
 import { AssistantDrawer } from "@/components/assistant/assistant-drawer";
 import { AlifLogo } from "@/components/brand/alif-logo";
+import { AppNav } from "@/components/nav/app-nav";
 
 export default async function AuthenticatedLayout({
   children,
@@ -13,19 +14,16 @@ export default async function AuthenticatedLayout({
   if (!userId) redirect("/sign-in");
 
   return (
-    <div className="min-h-screen bg-[var(--sand)]">
-      <header className="border-b border-[var(--border)] bg-white px-5 py-4">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+    <div className="min-h-screen">
+      <header className="sticky top-0 z-30 border-b border-[var(--border)] bg-white/85 px-5 py-3 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
           <Link aria-label="ALIF journey" href="/journey">
             <AlifLogo compact />
           </Link>
-          <nav aria-label="Primary" className="flex items-center gap-5 text-sm font-bold">
-            <Link href="/journey">Journey</Link>
-            <Link href="/journey/documents">Documents</Link>
-            <Link href="/journey/budget">Budget</Link>
-            <Link href="/profile">Profile</Link>
+          <div className="flex items-center gap-3">
+            <AppNav />
             <UserButton />
-          </nav>
+          </div>
         </div>
       </header>
       {children}

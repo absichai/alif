@@ -18,7 +18,7 @@ export function JourneyStream({ plan }: { plan: JourneyPlan }) {
         >
           <div className="z-10 flex flex-col items-center">
             <span
-              className={`grid size-12 place-items-center rounded-full border-2 font-extrabold md:size-16 ${
+              className={`grid size-12 place-items-center rounded-full border-2 font-semibold md:size-16 ${
                 milestone.state === "current"
                   ? "border-[var(--journey)] bg-[var(--journey)] text-white"
                   : milestone.state === "completed"

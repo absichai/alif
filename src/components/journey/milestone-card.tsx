@@ -11,7 +11,7 @@ export function MilestoneCard({ milestone }: { milestone: JourneyMilestone }) {
 
   return (
     <article
-      className={`rounded-[var(--radius-card)] bg-white p-6 shadow-[0_10px_30px_rgba(24,32,30,0.06)] ${
+      className={`rounded-[var(--radius-card)] bg-white p-6 shadow-[0_10px_30px_rgba(16,24,40,0.06)] ${
         current
           ? "border-[3px] border-[var(--journey)]"
           : "border border-[var(--border)]"
@@ -20,13 +20,13 @@ export function MilestoneCard({ milestone }: { milestone: JourneyMilestone }) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p
-            className={`text-xs font-extrabold uppercase tracking-[0.12em] ${
+            className={`text-xs font-semibold uppercase tracking-[0.12em] ${
               current ? "text-[var(--journey-text)]" : "text-[var(--muted)]"
             }`}
           >
             {current ? "Your next chapter" : milestone.phase.replaceAll("_", " ")}
           </p>
-          <h2 className="mt-2 text-2xl font-extrabold">{milestone.title}</h2>
+          <h2 className="mt-2 text-2xl font-semibold">{milestone.title}</h2>
         </div>
         <span className="rounded-full bg-[var(--sand)] px-3 py-1 text-xs font-bold text-[var(--muted)]">
           {completedCount}/{milestone.steps.length} complete
@@ -42,7 +42,7 @@ export function MilestoneCard({ milestone }: { milestone: JourneyMilestone }) {
                   ? "bg-[var(--success)] text-white"
                   : step.state === "blocked"
                     ? "bg-[var(--sand)] text-[var(--muted)]"
-                    : "bg-[#fff0e9] text-[var(--journey-text)]"
+                    : "bg-[#eaf0ff] text-[var(--journey-text)]"
               }`}
             >
               {step.state === "completed" ? (
@@ -68,7 +68,7 @@ export function MilestoneCard({ milestone }: { milestone: JourneyMilestone }) {
       </ul>
 
       <Link
-        className="mt-5 inline-flex min-h-11 items-center font-extrabold text-[var(--journey-text)]"
+        className="mt-5 inline-flex min-h-11 items-center font-semibold text-[var(--journey-text)]"
         href={`/journey/milestones/${milestone.key}`}
       >
         {current ? "Begin chapter" : "View chapter"} →

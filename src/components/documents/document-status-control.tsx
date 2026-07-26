@@ -57,10 +57,10 @@ export function DocumentStatusControl({
         {options.map((option) => (
           <button
             aria-pressed={current === option.value}
-            className={`min-h-9 rounded-full px-3 text-xs font-extrabold transition ${
+            className={`min-h-9 rounded-full px-3 text-xs font-semibold transition ${
               current === option.value
                 ? option.value === "ready"
-                  ? "bg-[#e8f3ee] text-[var(--success)]"
+                  ? "bg-[#e7f6ee] text-[var(--success)]"
                   : "bg-[var(--journey)] text-white"
                 : "text-[var(--muted)] hover:bg-black/5"
             }`}

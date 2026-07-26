@@ -59,7 +59,7 @@ export function ProposalCard({
   }
 
   return (
-    <div className="mt-4 rounded-2xl border-2 border-[var(--journey)] bg-[#fff8f4] p-4">
+    <div className="mt-4 rounded-2xl border-2 border-[var(--journey)] bg-[#f5f8ff] p-4">
       <p className="font-bold">Proposed journey update</p>
       {effect && effect.changedFields.length > 0 ? (
         <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">

@@ -62,10 +62,10 @@ export default function GeneratingJourneyPage() {
 
   return (
     <main className="mx-auto max-w-xl px-6 py-24">
-      <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[var(--journey-text)]">
+      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--journey-text)]">
         Building your first route
       </p>
-      <h1 className="mt-3 text-4xl font-extrabold">Mapping your route to Dubai</h1>
+      <h1 className="mt-3 text-4xl font-semibold">Mapping your route to Dubai</h1>
       <div className="mt-10 rounded-[var(--radius-card)] border border-[var(--border)] bg-white p-7">
         <GenerationProgress activeIndex={activeIndex} />
       </div>

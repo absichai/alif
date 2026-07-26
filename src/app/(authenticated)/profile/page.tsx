@@ -19,10 +19,10 @@ export default async function ProfilePage() {
 
   return (
     <main className="mx-auto max-w-3xl px-5 py-10">
-      <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+      <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
         Personalization
       </p>
-      <h1 className="mt-2 text-4xl font-extrabold">Your relocation profile</h1>
+      <h1 className="mt-2 text-4xl font-semibold">Your relocation profile</h1>
       <p className="mt-3 text-[var(--muted)]">
         ALIF uses only these details to personalize your Dubai journey.
       </p>

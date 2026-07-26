@@ -18,10 +18,10 @@ export function AuthShell({
           <AlifLogo />
         </div>
         <div className="mt-auto">
-          <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[#ffad88]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[#9db8ff]">
             Your personal settling journey
           </p>
-          <p className="mt-4 max-w-md text-4xl font-extrabold leading-tight">
+          <p className="mt-4 max-w-md text-4xl font-semibold leading-tight">
             From planning the move to feeling at home.
           </p>
           <div className="mt-10 h-1 w-28 rounded-full bg-[var(--journey)]" />
@@ -32,7 +32,7 @@ export function AuthShell({
           <p className="text-xs font-bold uppercase tracking-[0.15em] text-[var(--journey-text)]">
             {eyebrow}
           </p>
-          <h1 className="mb-8 mt-2 text-3xl font-extrabold">{title}</h1>
+          <h1 className="mb-8 mt-2 text-3xl font-semibold">{title}</h1>
           {children}
         </div>
       </section>

@@ -28,10 +28,10 @@ export default function MissingQuestionPage() {
   return (
     <OnboardingShell eyebrow="One detail">
       <div className="mt-14 max-w-2xl">
-        <p className="text-sm font-extrabold uppercase tracking-[0.18em] text-[var(--journey-text)]">
+        <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--journey-text)]">
           Almost there
         </p>
-        <h1 className="mt-3 text-4xl font-extrabold">
+        <h1 className="mt-3 text-4xl font-semibold">
           {state.nextQuestion?.prompt ?? "Checking what your journey needs…"}
         </h1>
         {state.nextQuestion ? (
@@ -47,7 +47,7 @@ export default function MissingQuestionPage() {
             Your answer
           </label>
           <textarea
-            className="mt-3 min-h-32 w-full rounded-xl border border-[var(--border)] bg-[#fcfbf8] p-4"
+            className="mt-3 min-h-32 w-full rounded-xl border border-[var(--border)] bg-[#f8fafd] p-4"
             id="missing-answer"
             maxLength={500}
             onChange={(event) => setAnswer(event.target.value)}

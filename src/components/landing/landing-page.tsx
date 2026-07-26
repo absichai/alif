@@ -55,13 +55,13 @@ export function LandingPage() {
       <section className="relative mx-auto grid max-w-6xl gap-14 px-6 pb-24 pt-14 lg:grid-cols-[1fr_0.9fr] lg:items-center">
         <div
           aria-hidden="true"
-          className="absolute -right-80 -top-40 size-[34rem] rounded-full bg-[#f2662e14] blur-3xl"
+          className="absolute -right-80 -top-40 size-[34rem] rounded-full bg-[#2e6bff14] blur-3xl"
         />
         <div className="relative">
-          <p className="text-sm font-extrabold uppercase tracking-[0.16em] text-[var(--journey-text)]">
+          <p className="text-sm font-semibold uppercase tracking-[0.16em] text-[var(--journey-text)]">
             Your personal settling journey
           </p>
-          <h1 className="mt-5 max-w-3xl text-5xl font-extrabold leading-[1.04] md:text-6xl">
+          <h1 className="mt-5 max-w-3xl text-5xl font-semibold leading-[1.04] md:text-6xl">
             Your move is more than a checklist.
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-8 text-[var(--muted)]">
@@ -70,7 +70,7 @@ export function LandingPage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
-              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[var(--oasis)] px-6 py-3 font-extrabold text-white transition hover:-translate-y-0.5"
+              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[var(--oasis)] px-6 py-3 font-semibold text-white transition hover:-translate-y-0.5"
               href="/start"
             >
               Build my Dubai journey <ArrowRight aria-hidden size={18} />
@@ -88,7 +88,7 @@ export function LandingPage() {
           </p>
         </div>
 
-        <div className="relative rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-[0_30px_80px_rgba(19,60,51,0.14)]">
+        <div className="relative rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-[0_30px_80px_rgba(31,68,187,0.12)]">
           <div className="mb-6 flex items-center gap-2 text-sm font-bold text-[var(--muted)]">
             <Sparkles aria-hidden className="text-[var(--journey)]" size={18} />
             Prepared around your plans
@@ -98,7 +98,7 @@ export function LandingPage() {
               <li className="grid grid-cols-[44px_1fr] gap-4" key={phase}>
                 <div className="flex flex-col items-center">
                   <span
-                    className={`grid size-11 place-items-center rounded-full font-extrabold ${
+                    className={`grid size-11 place-items-center rounded-full font-semibold ${
                       index === 0
                         ? "bg-[var(--journey)] text-white"
                         : "border-2 border-[var(--border)] bg-white"
@@ -117,29 +117,29 @@ export function LandingPage() {
                       : "border-[var(--border)]"
                   }`}
                 >
-                  <span className="text-xs font-extrabold tracking-wide text-[var(--muted)]">
+                  <span className="text-xs font-semibold tracking-wide text-[var(--muted)]">
                     {phase}
                   </span>
-                  <h2 className="mt-1 text-lg font-extrabold">{title}</h2>
+                  <h2 className="mt-1 text-lg font-semibold">{title}</h2>
                 </div>
               </li>
             ))}
           </ol>
           <div className="rounded-2xl bg-[var(--oasis)] p-5 text-white">
-            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#ffad88]">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#9db8ff]">
               Next chapter
             </p>
-            <p className="mt-1 font-extrabold">Turn your address into a home</p>
+            <p className="mt-1 font-semibold">Turn your address into a home</p>
           </div>
         </div>
       </section>
 
       <section className="border-y border-[var(--border)] bg-white" id="how-it-works">
         <div className="mx-auto max-w-6xl px-6 py-16">
-          <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+          <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
             How it works
           </p>
-          <h2 className="mt-2 text-3xl font-extrabold">
+          <h2 className="mt-2 text-3xl font-semibold">
             Three steps to one clear journey
           </h2>
           <ol className="mt-8 grid gap-8 md:grid-cols-3">
@@ -158,10 +158,10 @@ export function LandingPage() {
               ],
             ].map(([title, copy], index) => (
               <li key={title}>
-                <span className="grid size-11 place-items-center rounded-full bg-[var(--journey)] font-extrabold text-white">
+                <span className="grid size-11 place-items-center rounded-full bg-[var(--journey)] font-semibold text-white">
                   {index + 1}
                 </span>
-                <h3 className="mt-4 text-xl font-extrabold">{title}</h3>
+                <h3 className="mt-4 text-xl font-semibold">{title}</h3>
                 <p className="mt-2 leading-7 text-[var(--muted)]">{copy}</p>
               </li>
             ))}
@@ -173,10 +173,10 @@ export function LandingPage() {
         <div className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-3">
           {promises.map(({ icon: Icon, title, copy }) => (
             <article key={title}>
-              <span className="grid size-11 place-items-center rounded-xl bg-[#e8f3ee] text-[var(--oasis)]">
+              <span className="grid size-11 place-items-center rounded-xl bg-[#eaf1ff] text-[var(--oasis)]">
                 <Icon aria-hidden size={21} />
               </span>
-              <h2 className="mt-5 text-xl font-extrabold">{title}</h2>
+              <h2 className="mt-5 text-xl font-semibold">{title}</h2>
               <p className="mt-2 leading-7 text-[var(--muted)]">{copy}</p>
             </article>
           ))}

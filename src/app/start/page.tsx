@@ -7,10 +7,10 @@ export default function StartPage() {
   return (
     <main className="mx-auto min-h-screen max-w-4xl px-6 py-10">
       <AlifLogo />
-      <p className="mt-16 text-sm font-extrabold uppercase tracking-[0.18em] text-[var(--journey-text)]">
+      <p className="mt-16 text-sm font-semibold uppercase tracking-[0.18em] text-[var(--journey-text)]">
         Your journey begins here
       </p>
-      <h1 className="mt-3 text-4xl font-extrabold md:text-5xl">
+      <h1 className="mt-3 text-4xl font-semibold md:text-5xl">
         How would you like to begin?
       </h1>
       <p className="mt-3 text-[var(--muted)]">

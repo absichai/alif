@@ -130,7 +130,7 @@ export function AssistantDrawer() {
   return (
     <>
       <button
-        className="fixed bottom-5 right-5 z-40 inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--oasis)] px-5 font-extrabold text-white shadow-xl transition hover:-translate-y-0.5"
+        className="fixed bottom-5 right-5 z-40 inline-flex min-h-12 items-center gap-2 rounded-full bg-[var(--oasis)] px-5 font-semibold text-white shadow-xl transition hover:-translate-y-0.5"
         onClick={() => setOpen(true)}
         ref={openerRef}
         type="button"
@@ -154,10 +154,10 @@ export function AssistantDrawer() {
           >
             <div className="flex items-center justify-between border-b border-[var(--border)] p-5">
               <div>
-                <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+                <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[var(--journey-text)]">
                   Your settling guide
                 </p>
-                <h2 className="mt-1 text-2xl font-extrabold">Ask ALIF</h2>
+                <h2 className="mt-1 text-2xl font-semibold">Ask ALIF</h2>
               </div>
               <button
                 aria-label="Close assistant"
@@ -174,7 +174,7 @@ export function AssistantDrawer() {
               className="flex-1 overflow-y-auto p-5"
               ref={logRef}
             >
-              <div className="flex items-start gap-2 rounded-xl bg-[#e8f3ee] p-3 text-xs leading-5 text-[var(--oasis)]">
+              <div className="flex items-start gap-2 rounded-xl bg-[#eaf1ff] p-3 text-xs leading-5 text-[var(--oasis)]">
                 <ShieldCheck aria-hidden className="mt-0.5 shrink-0" size={16} />
                 Answers use your curated journey. Changes always require your
                 confirmation.

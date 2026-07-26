@@ -33,6 +33,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // The dev indicator badge overlaps tap targets on small viewports and
+  // intercepts clicks in mobile browser tests; it has no production effect.
+  devIndicators: false,
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

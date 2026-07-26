@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --oasis: #133c33;
-  --journey: #f2662e;
-  --journey-text: #b84212;
-  --sand: #f7f4ee;
+  --oasis: #1f55e0;
+  --journey: #2e6bff;
+  --journey-text: #1d4ed8;
+  --sand: #f4f6fb;
   --surface: #ffffff;
-  --ink: #18201e;
-  --muted: #69736f;
-  --border: #dfe4e1;
+  --ink: #101828;
+  --muted: #667085;
+  --border: #e4e9f2;
   --identity: #6553d8;
   --home: #2d7bd9;
-  --success: #267a4a;
-  --warning: #9a5b00;
-  --error: #b42318;
+  --success: #12965a;
+  --warning: #b45309;
+  --error: #d92d20;
   --radius-card: 1.25rem;
   --radius-control: 0.75rem;
 }
@@ -31,7 +31,11 @@ body {
   margin: 0;
   min-height: 100vh;
   font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  background: var(--sand);
+  background:
+    radial-gradient(60rem 40rem at 115% -10%, rgba(46, 107, 255, 0.09), transparent 60%),
+    radial-gradient(50rem 36rem at -15% 8%, rgba(150, 121, 235, 0.08), transparent 55%),
+    var(--sand);
+  background-attachment: fixed;
 }
 
 h1,
@@ -39,6 +43,7 @@ h2,
 h3 {
   font-family: var(--font-manrope), var(--font-inter), ui-sans-serif, sans-serif;
   text-wrap: balance;
+  letter-spacing: -0.01em;
 }
 
 :focus-visible {
