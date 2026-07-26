@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, gt, inArray } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { getDb } from "@/db/client";
@@ -205,27 +205,22 @@ export class NeonJourneyRepository implements JourneyRepository {
       const requestedStep = input.nextPlan.stepsById[input.definitionId];
       if (!requestedStep) throw new Error(`Unknown journey step ${input.definitionId}`);
 
-      const idsByState = new Map<
-        (typeof requestedStep)["state"],
-        string[]
-      >();
-      for (const stepId of input.nextPlan.stepIds) {
-        const step = input.nextPlan.stepsById[stepId];
-        if (!step) throw new Error(`Missing plan step ${stepId}`);
-        const ids = idsByState.get(step.state) ?? [];
-        ids.push(stepId);
-        idsByState.set(step.state, ids);
-      }
-      for (const [state, ids] of idsByState) {
+      // Upsert instead of update: journeys created before a pack expansion
+      // have no rows for newly added definitions, and a plain UPDATE would
+      // silently drop their progress while still reporting success.
+      const rows = toJourneyStepRows(ownedJourney.id, input.nextPlan);
+      if (rows.length > 0) {
         await tx
-          .update(journeySteps)
-          .set({ state })
-          .where(
-            and(
-              eq(journeySteps.journeyId, ownedJourney.id),
-              inArray(journeySteps.definitionId, ids),
-            ),
-          );
+          .insert(journeySteps)
+          .values(rows)
+          .onConflictDoUpdate({
+            target: [journeySteps.journeyId, journeySteps.definitionId],
+            set: {
+              state: sql`excluded.state`,
+              milestoneKey: sql`excluded.milestone_key`,
+              position: sql`excluded.position`,
+            },
+          });
       }
 
       await tx
@@ -242,6 +237,7 @@ export class NeonJourneyRepository implements JourneyRepository {
         .update(journeys)
         .set({
           version: ownedJourney.version + 1,
+          destinationPackVersion: input.nextPlan.packVersion,
           updatedAt: new Date(),
         })
         .where(eq(journeys.id, ownedJourney.id));
@@ -378,7 +374,7 @@ export class NeonJourneyRepository implements JourneyRepository {
       const rows = toJourneyStepRows(owned.journeyId, input.nextPlan);
       if (rows.length > 0) await tx.insert(journeySteps).values(rows);
 
-      await tx
+      const bumped = await tx
         .update(journeys)
         .set({
           version: owned.journeyVersion + 1,
@@ -390,7 +386,11 @@ export class NeonJourneyRepository implements JourneyRepository {
             eq(journeys.id, owned.journeyId),
             eq(journeys.version, owned.journeyVersion),
           ),
-        );
+        )
+        .returning({ id: journeys.id });
+      if (bumped.length === 0) {
+        throw new Error("Journey changed before the profile update");
+      }
     });
 
     const stored = await this.findActiveByClerkUserId(input.clerkUserId);
@@ -451,7 +451,7 @@ export class NeonJourneyRepository implements JourneyRepository {
       const rows = toJourneyStepRows(owned.journeyId, input.nextPlan);
       if (rows.length > 0) await tx.insert(journeySteps).values(rows);
 
-      await tx
+      const bumped = await tx
         .update(journeys)
         .set({
           version: owned.journeyVersion + 1,
@@ -462,7 +462,11 @@ export class NeonJourneyRepository implements JourneyRepository {
             eq(journeys.id, owned.journeyId),
             eq(journeys.version, owned.journeyVersion),
           ),
-        );
+        )
+        .returning({ id: journeys.id });
+      if (bumped.length === 0) {
+        throw new Error("Proposal is stale or unavailable");
+      }
 
       await tx
         .update(assistantProposals)

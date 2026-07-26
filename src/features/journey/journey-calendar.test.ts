@@ -30,6 +30,7 @@ describe("journey calendar", () => {
     );
     const calendar = buildJourneyCalendar(plan, {
       start: new Date("2026-07-27T00:00:00Z"),
+      calendarId: "journey-1",
       maxEvents: 3,
     });
 
@@ -39,6 +40,7 @@ describe("journey calendar", () => {
     expect(calendar).toContain("DTSTART;VALUE=DATE:20260810");
     expect(calendar.match(/BEGIN:VEVENT/g)).toHaveLength(3);
     expect(calendar).toContain("SUMMARY:ALIF");
+    expect(calendar).toContain("UID:journey-1-");
     expect(calendar.endsWith("END:VCALENDAR\r\n")).toBe(true);
   });
 

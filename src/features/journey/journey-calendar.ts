@@ -39,7 +39,7 @@ export function upcomingSteps(plan: JourneyPlan): JourneyStep[] {
 
 export function buildJourneyCalendar(
   plan: JourneyPlan,
-  options: { start: Date; maxEvents?: number },
+  options: { start: Date; calendarId: string; maxEvents?: number },
 ): string {
   const steps = upcomingSteps(plan).slice(0, options.maxEvents ?? 12);
   const weekMs = 7 * 24 * 60 * 60 * 1_000;
@@ -57,7 +57,7 @@ export function buildJourneyCalendar(
     const eventDate = new Date(options.start.getTime() + index * weekMs);
     lines.push(
       "BEGIN:VEVENT",
-      foldLine(`UID:${step.id}@alif.journey`),
+      foldLine(`UID:${options.calendarId}-${step.id}@alif.journey`),
       `DTSTAMP:${formatStamp(options.start)}`,
       `DTSTART;VALUE=DATE:${formatDate(eventDate)}`,
       foldLine(`SUMMARY:${escapeText(`ALIF · ${step.title}`)}`),

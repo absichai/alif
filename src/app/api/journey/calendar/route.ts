@@ -20,6 +20,7 @@ export async function GET() {
 
   const calendar = buildJourneyCalendar(journey.plan, {
     start: nextMonday(new Date()),
+    calendarId: journey.stored.id,
   });
 
   return new Response(calendar, {

@@ -45,13 +45,20 @@ export function ProfileEditor({ profile }: { profile: RelocationProfile }) {
     const values = new FormData(event.currentTarget);
     const relationshipStatus = values.get("relationshipStatus");
     const incomeValue = values.get("incomeRange");
-    const preferences: RelocationProfile["preferences"] = {};
+    // Start from the stored preferences so keys without a form control
+    // (e.g. needsSchools from story extraction) survive an edit.
+    const preferences: RelocationProfile["preferences"] = {
+      ...profile.preferences,
+    };
     const wantsToDrive = fromTriState(values.get("wantsToDrive"));
-    if (wantsToDrive !== undefined) preferences.wantsToDrive = wantsToDrive;
+    if (wantsToDrive === undefined) delete preferences.wantsToDrive;
+    else preferences.wantsToDrive = wantsToDrive;
     const cooling = fromTriState(values.get("propertyRequiresDistrictCooling"));
-    if (cooling !== undefined) preferences.propertyRequiresDistrictCooling = cooling;
+    if (cooling === undefined) delete preferences.propertyRequiresDistrictCooling;
+    else preferences.propertyRequiresDistrictCooling = cooling;
     const hasPets = fromTriState(values.get("hasPets"));
-    if (hasPets !== undefined) preferences.hasPets = hasPets;
+    if (hasPets === undefined) delete preferences.hasPets;
+    else preferences.hasPets = hasPets;
 
     const parsed = profilePatchSchema.safeParse({
       stage: values.get("stage"),
