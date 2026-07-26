@@ -5,6 +5,7 @@ import { z } from "zod";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
 import { dubaiPack } from "@/data/destinations/dubai/pack";
 import { buildJourney } from "@/features/journey/journey-engine";
+import { applyProfilePatch } from "@/features/profile/profile-schema";
 import { apiError } from "@/lib/http-errors";
 
 const decisionSchema = z.object({
@@ -64,22 +65,26 @@ export async function POST(
       "Your journey changed. Ask ALIF again.",
     );
   }
-  const profile = {
-    ...stored.profile,
-    residencyPath: proposal.payload.residencyPath,
-  };
+  const patched = applyProfilePatch(stored.profile, proposal.payload.patch);
+  if (!patched.success) {
+    return apiError(
+      409,
+      "STALE_PROPOSAL",
+      "This suggestion is no longer current.",
+    );
+  }
   const nextPlan = buildJourney(
-    profile,
+    patched.data,
     dubaiPack,
     new Set(stored.completedDefinitionIds),
   );
 
   try {
-    const updated = await repository.applyResidencyPathProposal({
+    const updated = await repository.applyProfileProposal({
       clerkUserId: userId,
       proposalId: id,
       expectedJourneyVersion: proposal.journeyVersion,
-      profile,
+      profile: patched.data,
       nextPlan,
     });
     return NextResponse.json({

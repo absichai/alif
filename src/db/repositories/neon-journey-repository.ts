@@ -12,6 +12,7 @@ import {
   users,
 } from "@/db/schema";
 import {
+  profilePatchSchema,
   relocationProfileSchema,
   residencyPathSchema,
   type RelocationProfile,
@@ -24,19 +25,23 @@ import type {
 } from "./journey-repository";
 import { toJourneyStepRows } from "./journey-row-mapper";
 
-const proposalPayloadSchema = z.object({
-  residencyPath: residencyPathSchema,
-});
+const patchPayloadSchema = z.object({ patch: profilePatchSchema });
 
-const proposalTypeSchema = z.literal("set_residency_path");
+// Rows written before proposals were generalized carry a bare residency path.
+const legacyPayloadSchema = z.object({ residencyPath: residencyPathSchema });
 
 function mapProposal(row: typeof assistantProposals.$inferSelect): StoredProposal {
+  const payload =
+    row.proposalType === "set_residency_path"
+      ? { patch: { residencyPath: legacyPayloadSchema.parse(row.payload).residencyPath } }
+      : patchPayloadSchema.parse(row.payload);
+
   return {
     id: row.id,
     journeyId: row.journeyId,
     journeyVersion: row.journeyVersion,
-    proposalType: proposalTypeSchema.parse(row.proposalType),
-    payload: proposalPayloadSchema.parse(row.payload),
+    proposalType: "update_profile",
+    payload,
     status: row.status,
     expiresAt: row.expiresAt,
   };
@@ -393,8 +398,8 @@ export class NeonJourneyRepository implements JourneyRepository {
     return stored;
   }
 
-  async applyResidencyPathProposal(
-    input: Parameters<JourneyRepository["applyResidencyPathProposal"]>[0],
+  async applyProfileProposal(
+    input: Parameters<JourneyRepository["applyProfileProposal"]>[0],
   ): Promise<StoredJourney> {
     const db = getDb();
 
@@ -424,15 +429,18 @@ export class NeonJourneyRepository implements JourneyRepository {
       if (!owned || owned.journeyVersion !== input.expectedJourneyVersion) {
         throw new Error("Proposal is stale or unavailable");
       }
-      const payload = proposalPayloadSchema.parse(owned.proposal.payload);
-      if (payload.residencyPath !== input.profile.residencyPath) {
-        throw new Error("Proposal is stale or unavailable");
-      }
 
       await tx
         .update(relocationProfiles)
         .set({
+          destinationCode: input.profile.destinationCode,
+          stage: input.profile.stage,
+          moveTimeframe: input.profile.moveTimeframe,
+          household: input.profile.household,
           residencyPath: input.profile.residencyPath,
+          passportCountry: input.profile.passportCountry,
+          incomeRange: input.profile.incomeRange,
+          preferences: input.profile.preferences,
           updatedAt: new Date(),
         })
         .where(eq(relocationProfiles.userId, owned.userId));
