@@ -37,7 +37,7 @@ mobility, family, and daily life.
 The interface emphasizes a continuous timeline, a current chapter, and what
 each chapter unlocks. Government actions link to the responsible official
 authority and show when the source was last verified. Non-government service
-steps expose future partner opportunities without presenting paid placements as
+steps surface suggested service types without presenting paid placements as
 official guidance.
 
 Users can complete and reopen steps, see dependent chapters unlock, inspect the

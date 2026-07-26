@@ -131,7 +131,7 @@ Dubai definitions live in
 
 - applicability rules and prerequisite IDs;
 - a phase, milestone, and category;
-- explanatory copy and partner service type when relevant;
+- explanatory copy and a suggested service type when relevant;
 - an official authority URL for government actions;
 - a `lastVerifiedAt` date.
 

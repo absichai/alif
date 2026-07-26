@@ -30,7 +30,7 @@ export default async function MilestonePage({
         ← Back to journey
       </Link>
       <div className="mt-8">
-        <MilestoneDetail milestone={milestone} />
+        <MilestoneDetail milestone={milestone} plan={result.plan} />
       </div>
     </main>
   );

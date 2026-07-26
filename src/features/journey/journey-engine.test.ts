@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { dubaiPack } from "@/data/destinations/dubai/pack";
 import type { RelocationProfile } from "@/features/profile/profile-schema";
 
-import { buildJourney } from "./journey-engine";
+import { buildJourney, unlockedBy } from "./journey-engine";
 
 const baseProfile: RelocationProfile = {
   destinationCode: "AE-DXB",
@@ -57,5 +57,37 @@ describe("buildJourney", () => {
     expect(first.stepsById.residency_route?.state).toBe("current");
     expect(next.stepsById.residency_route?.state).toBe("completed");
     expect(next.stepsById.move_budget?.state).toBe("current");
+  });
+
+  it("lists the steps a completion unlocks", () => {
+    const plan = buildJourney(baseProfile, dubaiPack, new Set());
+    const unlocked = unlockedBy(plan, "emirates_id").map((step) => step.id);
+
+    expect(unlocked).toContain("bank_account");
+    expect(unlocked).toContain("ejari");
+    expect(unlockedBy(plan, "school_preparation")).toHaveLength(0);
+  });
+
+  it("rejects packs with dependency cycles", () => {
+    const cyclic = {
+      destinationCode: "AE-DXB",
+      version: "test",
+      definitions: [
+        {
+          ...dubaiPack.definitions[0]!,
+          id: "step_a",
+          prerequisites: ["step_b"],
+        },
+        {
+          ...dubaiPack.definitions[0]!,
+          id: "step_b",
+          prerequisites: ["step_a"],
+        },
+      ],
+    };
+
+    expect(() => buildJourney(baseProfile, cyclic, new Set())).toThrow(
+      /dependency cycle/,
+    );
   });
 });

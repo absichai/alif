@@ -69,6 +69,13 @@ function assertValidDependencies(definitions: StepDefinition[]): void {
   definitions.forEach((definition) => visit(definition.id));
 }
 
+export function unlockedBy(plan: JourneyPlan, definitionId: string): JourneyStep[] {
+  return plan.stepIds.flatMap((id) => {
+    const step = plan.stepsById[id];
+    return step && step.prerequisites.includes(definitionId) ? [step] : [];
+  });
+}
+
 export function buildJourney(
   profile: RelocationProfile,
   pack: DestinationPack,
