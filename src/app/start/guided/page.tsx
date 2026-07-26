@@ -26,16 +26,31 @@ const blankProfile: RelocationProfileDraft = {
   preferences: {},
 };
 
+function preferenceValue(value: FormDataEntryValue | null): boolean | undefined {
+  if (value === "yes") return true;
+  if (value === "no") return false;
+  return undefined;
+}
+
 export default function GuidedOnboardingPage() {
   const router = useRouter();
   const { state, setGuidedProfile } = useOnboardingFlow("guided");
   const [skipIncome, setSkipIncome] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const values = new FormData(event.currentTarget);
     const relationshipStatus = values.get("relationshipStatus");
     const childrenCount = Number(values.get("childrenCount"));
+    const preferences: Record<string, boolean> = {};
+    const wantsToDrive = preferenceValue(values.get("wantsToDrive"));
+    if (wantsToDrive !== undefined) preferences.wantsToDrive = wantsToDrive;
+    const cooling = preferenceValue(values.get("propertyRequiresDistrictCooling"));
+    if (cooling !== undefined) {
+      preferences.propertyRequiresDistrictCooling = cooling;
+    }
+
     const parsed = profileDraftSchema.safeParse({
       ...blankProfile,
       stage: values.get("stage"),
@@ -49,11 +64,17 @@ export default function GuidedOnboardingPage() {
       residencyPath: values.get("residencyPath"),
       passportCountry: values.get("passportCountry"),
       incomeRange: skipIncome ? null : values.get("incomeRange") || null,
+      preferences,
     });
 
     if (parsed.success) {
+      setFormError(null);
       setGuidedProfile(parsed.data);
       router.push("/journey-ready");
+    } else {
+      setFormError(
+        "Please review your answers — one of them is missing or not valid.",
+      );
     }
   }
 
@@ -148,6 +169,32 @@ export default function GuidedOnboardingPage() {
             />
           </label>
 
+          <fieldset className="grid gap-4">
+            <legend className="font-bold">
+              Optional: two quick life preferences
+            </legend>
+            <label>
+              Planning to drive in Dubai?
+              <select className={fieldClass} defaultValue="unknown" name="wantsToDrive">
+                <option value="unknown">Not decided yet</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </label>
+            <label>
+              Will your home use district cooling?
+              <select
+                className={fieldClass}
+                defaultValue="unknown"
+                name="propertyRequiresDistrictCooling"
+              >
+                <option value="unknown">Not known yet</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </label>
+          </fieldset>
+
           <div className="rounded-xl border border-dashed border-[var(--border)] p-5">
             <label className="font-bold">
               Optional: monthly household income in AED
@@ -178,6 +225,11 @@ export default function GuidedOnboardingPage() {
           <div className="flex justify-end">
             <Button type="submit">Create my journey draft</Button>
           </div>
+          {formError ? (
+            <p className="font-bold text-[var(--warning)]" role="alert">
+              {formError}
+            </p>
+          ) : null}
           {state.error ? <p role="alert">{state.error}</p> : null}
         </form>
       </Card>

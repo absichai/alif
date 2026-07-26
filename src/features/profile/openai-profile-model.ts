@@ -18,6 +18,9 @@ Do not give advice, recommendations, eligibility decisions, or journey steps.
 Use null when a mandatory fact is absent.
 Residency path may be "unknown"; do not guess.
 Income must be one allowed range or null; never infer income.
+Set preferences.wantsToDrive, preferences.propertyRequiresDistrictCooling, or
+preferences.needsSchools only when the story clearly states that intention;
+otherwise leave the preference out entirely.
 Do not extract passport numbers, ID numbers, credentials, or document contents.
 When existingProfile and latestAnswer are present, merge the answer only into the
 missing field it clearly addresses and preserve every already known value.
