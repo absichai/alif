@@ -2,6 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { JourneyStream } from "@/components/journey/journey-stream";
+import { NextStepCard } from "@/components/journey/next-step-card";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
 import { dubaiPack } from "@/data/destinations/dubai/pack";
 import { getJourney } from "@/features/journey/journey-service";
@@ -49,6 +50,7 @@ export default async function JourneyPage() {
           </div>
         </div>
       </div>
+      <NextStepCard plan={plan} />
       <JourneyStream plan={plan} />
     </main>
   );
