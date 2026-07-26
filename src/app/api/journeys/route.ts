@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { createJourney, getJourney } from "@/features/journey/journey-service";
 import {
   finalizeProfile,
@@ -15,15 +15,24 @@ const repository = new NeonJourneyRepository();
 export async function GET() {
   const { userId } = await auth();
   if (!userId) return apiError(401, "UNAUTHENTICATED", "Please sign in.");
-  const result = await getJourney(repository, userId, dubaiPack);
-  return NextResponse.json(result);
+  try {
+    const result = await getJourney(repository, userId, getDestinationPack());
+    return NextResponse.json(result);
+  } catch {
+    return apiError(
+      503,
+      "JOURNEY_UNAVAILABLE",
+      "ALIF could not load your journey just now. Please try again.",
+      true,
+    );
+  }
 }
 
 export async function POST(request: Request) {
   const { userId } = await auth();
   if (!userId) return apiError(401, "UNAUTHENTICATED", "Please sign in.");
 
-  const existing = await getJourney(repository, userId, dubaiPack);
+  const existing = await getJourney(repository, userId, getDestinationPack());
   if (existing) return NextResponse.json(existing);
 
   let payload: unknown;
@@ -46,6 +55,21 @@ export async function POST(request: Request) {
     );
   }
 
-  const result = await createJourney(repository, userId, profile.data, dubaiPack);
-  return NextResponse.json(result, { status: 201 });
+  try {
+    const result = await createJourney(repository, userId, profile.data, getDestinationPack());
+    return NextResponse.json(result, { status: 201 });
+  } catch {
+    // Two concurrent creates can race past the existence check; the partial
+    // unique index keeps one active journey, so return whichever row won.
+    const raced = await getJourney(repository, userId, getDestinationPack()).catch(
+      () => null,
+    );
+    if (raced) return NextResponse.json(raced);
+    return apiError(
+      503,
+      "JOURNEY_CREATE_FAILED",
+      "ALIF could not create your journey just now. Please try again.",
+      true,
+    );
+  }
 }

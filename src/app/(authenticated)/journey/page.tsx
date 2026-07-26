@@ -2,8 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { JourneyStream } from "@/components/journey/journey-stream";
+import { NextStepCard } from "@/components/journey/next-step-card";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { getJourney } from "@/features/journey/journey-service";
 
 export default async function JourneyPage() {
@@ -12,7 +13,7 @@ export default async function JourneyPage() {
   const result = await getJourney(
     new NeonJourneyRepository(),
     userId,
-    dubaiPack,
+    getDestinationPack(),
   );
   if (!result) redirect("/start");
 
@@ -40,15 +41,22 @@ export default async function JourneyPage() {
             </strong>
             journey complete
           </p>
-          <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+          <div
+            aria-label="Journey progress"
+            aria-valuemax={100}
+            aria-valuemin={0}
+            aria-valuenow={percent}
+            className="mt-2 h-2 overflow-hidden rounded-full bg-white"
+            role="progressbar"
+          >
             <div
-              aria-hidden="true"
               className="h-full rounded-full bg-[var(--journey)]"
               style={{ width: `${percent}%` }}
             />
           </div>
         </div>
       </div>
+      <NextStepCard plan={plan} />
       <JourneyStream plan={plan} />
     </main>
   );

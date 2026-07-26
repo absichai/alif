@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { getDb } from "@/db/client";
@@ -12,6 +12,7 @@ import {
   users,
 } from "@/db/schema";
 import {
+  profilePatchSchema,
   relocationProfileSchema,
   residencyPathSchema,
   type RelocationProfile,
@@ -24,19 +25,23 @@ import type {
 } from "./journey-repository";
 import { toJourneyStepRows } from "./journey-row-mapper";
 
-const proposalPayloadSchema = z.object({
-  residencyPath: residencyPathSchema,
-});
+const patchPayloadSchema = z.object({ patch: profilePatchSchema });
 
-const proposalTypeSchema = z.literal("set_residency_path");
+// Rows written before proposals were generalized carry a bare residency path.
+const legacyPayloadSchema = z.object({ residencyPath: residencyPathSchema });
 
 function mapProposal(row: typeof assistantProposals.$inferSelect): StoredProposal {
+  const payload =
+    row.proposalType === "set_residency_path"
+      ? { patch: { residencyPath: legacyPayloadSchema.parse(row.payload).residencyPath } }
+      : patchPayloadSchema.parse(row.payload);
+
   return {
     id: row.id,
     journeyId: row.journeyId,
     journeyVersion: row.journeyVersion,
-    proposalType: proposalTypeSchema.parse(row.proposalType),
-    payload: proposalPayloadSchema.parse(row.payload),
+    proposalType: "update_profile",
+    payload,
     status: row.status,
     expiresAt: row.expiresAt,
   };
@@ -200,12 +205,27 @@ export class NeonJourneyRepository implements JourneyRepository {
       const requestedStep = input.nextPlan.stepsById[input.definitionId];
       if (!requestedStep) throw new Error(`Unknown journey step ${input.definitionId}`);
 
+      // Upsert instead of update: journeys created before a pack expansion
+      // have no rows for newly added definitions, and a plain UPDATE would
+      // silently drop their progress while still reporting success.
+      const rows = toJourneyStepRows(ownedJourney.id, input.nextPlan);
+      if (rows.length > 0) {
+        await tx
+          .insert(journeySteps)
+          .values(rows)
+          .onConflictDoUpdate({
+            target: [journeySteps.journeyId, journeySteps.definitionId],
+            set: {
+              state: sql`excluded.state`,
+              milestoneKey: sql`excluded.milestone_key`,
+              position: sql`excluded.position`,
+            },
+          });
+      }
+
       await tx
         .update(journeySteps)
-        .set({
-          state: input.completed ? "completed" : requestedStep.state,
-          completedAt: input.completed ? new Date() : null,
-        })
+        .set({ completedAt: input.completed ? new Date() : null })
         .where(
           and(
             eq(journeySteps.journeyId, ownedJourney.id),
@@ -213,30 +233,11 @@ export class NeonJourneyRepository implements JourneyRepository {
           ),
         );
 
-      for (const stepId of input.nextPlan.stepIds) {
-        const step = input.nextPlan.stepsById[stepId];
-        if (!step) throw new Error(`Missing plan step ${stepId}`);
-        await tx
-          .update(journeySteps)
-          .set({
-            state: step.state,
-            completedAt:
-              step.state === "completed" && stepId === input.definitionId
-                ? new Date()
-                : undefined,
-          })
-          .where(
-            and(
-              eq(journeySteps.journeyId, ownedJourney.id),
-              eq(journeySteps.definitionId, stepId),
-            ),
-          );
-      }
-
       await tx
         .update(journeys)
         .set({
           version: ownedJourney.version + 1,
+          destinationPackVersion: input.nextPlan.packVersion,
           updatedAt: new Date(),
         })
         .where(eq(journeys.id, ownedJourney.id));
@@ -327,8 +328,78 @@ export class NeonJourneyRepository implements JourneyRepository {
     });
   }
 
-  async applyResidencyPathProposal(
-    input: Parameters<JourneyRepository["applyResidencyPathProposal"]>[0],
+  async replaceProfileAndPlan(
+    input: Parameters<JourneyRepository["replaceProfileAndPlan"]>[0],
+  ): Promise<StoredJourney> {
+    const db = getDb();
+
+    await db.transaction(async (tx) => {
+      const [owned] = await tx
+        .select({
+          journeyId: journeys.id,
+          userId: users.id,
+          journeyVersion: journeys.version,
+        })
+        .from(journeys)
+        .innerJoin(users, eq(journeys.userId, users.id))
+        .where(
+          and(
+            eq(users.clerkUserId, input.clerkUserId),
+            eq(journeys.status, "active"),
+            eq(journeys.version, input.expectedJourneyVersion),
+          ),
+        )
+        .limit(1);
+
+      if (!owned) throw new Error("Journey changed before the profile update");
+
+      await tx
+        .update(relocationProfiles)
+        .set({
+          destinationCode: input.profile.destinationCode,
+          stage: input.profile.stage,
+          moveTimeframe: input.profile.moveTimeframe,
+          household: input.profile.household,
+          residencyPath: input.profile.residencyPath,
+          passportCountry: input.profile.passportCountry,
+          incomeRange: input.profile.incomeRange,
+          preferences: input.profile.preferences,
+          updatedAt: new Date(),
+        })
+        .where(eq(relocationProfiles.userId, owned.userId));
+
+      await tx
+        .delete(journeySteps)
+        .where(eq(journeySteps.journeyId, owned.journeyId));
+      const rows = toJourneyStepRows(owned.journeyId, input.nextPlan);
+      if (rows.length > 0) await tx.insert(journeySteps).values(rows);
+
+      const bumped = await tx
+        .update(journeys)
+        .set({
+          version: owned.journeyVersion + 1,
+          destinationPackVersion: input.nextPlan.packVersion,
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(journeys.id, owned.journeyId),
+            eq(journeys.version, owned.journeyVersion),
+          ),
+        )
+        .returning({ id: journeys.id });
+      if (bumped.length === 0) {
+        throw new Error("Journey changed before the profile update");
+      }
+    });
+
+    const stored = await this.findActiveByClerkUserId(input.clerkUserId);
+    if (!stored) throw new Error("Updated journey could not be loaded");
+    return stored;
+  }
+
+  async applyProfileProposal(
+    input: Parameters<JourneyRepository["applyProfileProposal"]>[0],
   ): Promise<StoredJourney> {
     const db = getDb();
 
@@ -358,15 +429,18 @@ export class NeonJourneyRepository implements JourneyRepository {
       if (!owned || owned.journeyVersion !== input.expectedJourneyVersion) {
         throw new Error("Proposal is stale or unavailable");
       }
-      const payload = proposalPayloadSchema.parse(owned.proposal.payload);
-      if (payload.residencyPath !== input.profile.residencyPath) {
-        throw new Error("Proposal is stale or unavailable");
-      }
 
       await tx
         .update(relocationProfiles)
         .set({
+          destinationCode: input.profile.destinationCode,
+          stage: input.profile.stage,
+          moveTimeframe: input.profile.moveTimeframe,
+          household: input.profile.household,
           residencyPath: input.profile.residencyPath,
+          passportCountry: input.profile.passportCountry,
+          incomeRange: input.profile.incomeRange,
+          preferences: input.profile.preferences,
           updatedAt: new Date(),
         })
         .where(eq(relocationProfiles.userId, owned.userId));
@@ -377,7 +451,7 @@ export class NeonJourneyRepository implements JourneyRepository {
       const rows = toJourneyStepRows(owned.journeyId, input.nextPlan);
       if (rows.length > 0) await tx.insert(journeySteps).values(rows);
 
-      await tx
+      const bumped = await tx
         .update(journeys)
         .set({
           version: owned.journeyVersion + 1,
@@ -388,7 +462,11 @@ export class NeonJourneyRepository implements JourneyRepository {
             eq(journeys.id, owned.journeyId),
             eq(journeys.version, owned.journeyVersion),
           ),
-        );
+        )
+        .returning({ id: journeys.id });
+      if (bumped.length === 0) {
+        throw new Error("Proposal is stale or unavailable");
+      }
 
       await tx
         .update(assistantProposals)

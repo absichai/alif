@@ -1,25 +1,9 @@
+import {
+  incomeLabels,
+  residencyLabels,
+  stageLabels,
+} from "@/features/profile/profile-labels";
 import type { RelocationProfile } from "@/features/profile/profile-schema";
-
-const stageLabels = {
-  exploring: "Exploring Dubai",
-  preparing: "Preparing to move",
-  arrived: "Already in Dubai",
-} as const;
-
-const residencyLabels = {
-  employment: "Employment sponsorship",
-  business_or_self: "Business or self-sponsorship",
-  family_sponsored: "Family sponsorship",
-  unknown: "Not sure yet",
-} as const;
-
-const incomeLabels = {
-  under_10000: "Under AED 10,000",
-  "10000_19999": "AED 10,000–19,999",
-  "20000_34999": "AED 20,000–34,999",
-  "35000_49999": "AED 35,000–49,999",
-  "50000_plus": "AED 50,000+",
-} as const;
 
 export function ProfileSummary({ profile }: { profile: RelocationProfile }) {
   const household =
@@ -40,6 +24,30 @@ export function ProfileSummary({ profile }: { profile: RelocationProfile }) {
     [
       "Monthly household income",
       profile.incomeRange ? incomeLabels[profile.incomeRange] : "Not provided",
+    ],
+    [
+      "Planning to drive in Dubai",
+      profile.preferences.wantsToDrive === undefined
+        ? "Not decided"
+        : profile.preferences.wantsToDrive
+          ? "Yes"
+          : "No",
+    ],
+    [
+      "Home uses district cooling",
+      profile.preferences.propertyRequiresDistrictCooling === undefined
+        ? "Not known yet"
+        : profile.preferences.propertyRequiresDistrictCooling
+          ? "Yes"
+          : "No",
+    ],
+    [
+      "Moving with pets",
+      profile.preferences.hasPets === undefined
+        ? "Not decided"
+        : profile.preferences.hasPets
+          ? "Yes"
+          : "No",
     ],
   ];
 

@@ -62,12 +62,16 @@ export function useOnboardingFlow(
 
   useEffect(() => {
     const stored = readOnboardingDraft();
-    if (!stored || stored.mode !== mode) return;
-    draftRef.current = stored;
-    const nextQuestion = questionFor(stored.profile);
+    if (!stored) return;
+    // Adopt drafts started in the other method so switching between the
+    // story and guided paths never loses answers.
+    const adopted = stored.mode === mode ? stored : { ...stored, mode };
+    if (stored.mode !== mode) writeOnboardingDraft(adopted);
+    draftRef.current = adopted;
+    const nextQuestion = questionFor(adopted.profile);
     setState({
       status: nextQuestion ? "question" : "editing",
-      draft: stored,
+      draft: adopted,
       nextQuestion,
       error: null,
     });

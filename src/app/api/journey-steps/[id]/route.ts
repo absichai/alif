@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { updateJourneyStep } from "@/features/journey/journey-progress";
 import { apiError } from "@/lib/http-errors";
 
@@ -35,7 +35,7 @@ export async function PATCH(
       userId,
       id,
       body.data.completed,
-      dubaiPack,
+      getDestinationPack(),
     );
     return NextResponse.json(result);
   } catch (error) {

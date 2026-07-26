@@ -27,6 +27,15 @@ export function JourneyStream({ plan }: { plan: JourneyPlan }) {
               }`}
             >
               {index + 1}
+              <span className="sr-only">
+                {milestone.state === "current"
+                  ? " — current chapter"
+                  : milestone.state === "completed"
+                    ? " — completed"
+                    : milestone.state === "blocked"
+                      ? " — waiting on earlier chapters"
+                      : " — ready"}
+              </span>
             </span>
           </div>
           <MilestoneCard milestone={milestone} />

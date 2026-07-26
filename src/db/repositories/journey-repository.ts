@@ -1,5 +1,8 @@
 import type { JourneyPlan } from "@/features/journey/journey-types";
-import type { RelocationProfile } from "@/features/profile/profile-schema";
+import type {
+  RelocationProfile,
+  RelocationProfilePatch,
+} from "@/features/profile/profile-schema";
 
 export type StoredJourney = {
   id: string;
@@ -13,8 +16,8 @@ export type StoredProposal = {
   id: string;
   journeyId: string;
   journeyVersion: number;
-  proposalType: "set_residency_path";
-  payload: { residencyPath: RelocationProfile["residencyPath"] };
+  proposalType: "update_profile";
+  payload: { patch: RelocationProfilePatch };
   status: "pending" | "confirmed" | "rejected" | "expired";
   expiresAt: Date;
 };
@@ -36,8 +39,8 @@ export interface JourneyRepository {
   createProposal(input: {
     clerkUserId: string;
     journeyVersion: number;
-    proposalType: "set_residency_path";
-    payload: { residencyPath: RelocationProfile["residencyPath"] };
+    proposalType: "update_profile";
+    payload: { patch: RelocationProfilePatch };
     expiresAt: Date;
   }): Promise<StoredProposal>;
   findProposalForOwner(input: {
@@ -49,9 +52,15 @@ export interface JourneyRepository {
     proposalId: string;
     status: "confirmed" | "rejected" | "expired";
   }): Promise<void>;
-  applyResidencyPathProposal(input: {
+  applyProfileProposal(input: {
     clerkUserId: string;
     proposalId: string;
+    expectedJourneyVersion: number;
+    profile: RelocationProfile;
+    nextPlan: JourneyPlan;
+  }): Promise<StoredJourney>;
+  replaceProfileAndPlan(input: {
+    clerkUserId: string;
     expectedJourneyVersion: number;
     profile: RelocationProfile;
     nextPlan: JourneyPlan;

@@ -10,6 +10,11 @@ const serverEnvironmentSchema = z.object({
   RATE_LIMIT_SALT: z.string().min(32),
 });
 
-export function getServerEnvironment() {
-  return serverEnvironmentSchema.parse(process.env);
+type ServerEnvironment = z.infer<typeof serverEnvironmentSchema>;
+
+let cached: ServerEnvironment | null = null;
+
+export function getServerEnvironment(): ServerEnvironment {
+  cached ??= serverEnvironmentSchema.parse(process.env);
+  return cached;
 }

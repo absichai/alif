@@ -1,15 +1,20 @@
 import {
   destinationPackSchema,
-  type StepDefinition,
+  type StepDefinitionInput,
 } from "@/features/journey/journey-types";
 
 const verified = "2026-07-20";
+const verifiedJul26 = "2026-07-26";
 
-function official(organization: string, url: string) {
-  return { organization, url, lastVerifiedAt: verified };
+function official(
+  organization: string,
+  url: string,
+  lastVerifiedAt: string = verified,
+) {
+  return { organization, url, lastVerifiedAt };
 }
 
-const definitions: StepDefinition[] = [
+const definitions: StepDefinitionInput[] = [
   {
     id: "residency_route",
     milestoneKey: "define_route",
@@ -68,7 +73,90 @@ const definitions: StepDefinition[] = [
       "UAE Ministry of Foreign Affairs",
       "https://www.mofa.gov.ae/en-us/services/documents-attestation",
     ),
+    requiredDocuments: [
+      {
+        key: "attested_degree",
+        label: "Attested education certificate",
+        note: "Commonly requested on employment residency routes.",
+      },
+    ],
+    setupCost: {
+      minAed: 500,
+      maxAed: 3000,
+      note: "Per-document attestation costs vary by issuing country and document type.",
+    },
     serviceType: null,
+  },
+  {
+    id: "shipping_household_goods",
+    milestoneKey: "prepare_documents",
+    phase: "before_move",
+    category: "planning",
+    title: "Plan how your belongings reach Dubai",
+    summary: "Compare shipping options, timelines, and customs expectations early.",
+    whyItMatters:
+      "Sea and air freight lead times often decide what travels with you and what follows.",
+    prerequisites: ["residency_route"],
+    applicability: {},
+    officialSource: official(
+      "Dubai Customs",
+      "https://www.dubaicustoms.gov.ae/en/Pages/default.aspx",
+      verifiedJul26,
+    ),
+    setupCost: {
+      minAed: 5000,
+      maxAed: 25000,
+      note: "Depends heavily on volume and sea versus air freight.",
+    },
+    serviceType: "International moving and customs support",
+  },
+  {
+    id: "pet_relocation",
+    milestoneKey: "prepare_documents",
+    phase: "before_move",
+    category: "family_daily_life",
+    title: "Prepare your pet's relocation",
+    summary: "Check import permits, vaccinations, and travel arrangements for pets.",
+    whyItMatters:
+      "Animal import approvals and vaccination windows need lead time before travel.",
+    prerequisites: ["residency_route"],
+    applicability: { preference: { key: "hasPets", value: true } },
+    officialSource: official(
+      "UAE Ministry of Climate Change and Environment",
+      "https://www.moccae.gov.ae/en/home.aspx",
+      verifiedJul26,
+    ),
+    requiredDocuments: [
+      {
+        key: "pet_vaccination_records",
+        label: "Pet vaccination records and health certificate",
+      },
+    ],
+    setupCost: {
+      minAed: 2000,
+      maxAed: 10000,
+      note: "Permits, vet work, and transport vary by animal and origin.",
+    },
+    serviceType: "Pet relocation support",
+  },
+  {
+    id: "arrival_accommodation",
+    milestoneKey: "land_confidently",
+    phase: "arrival",
+    category: "home",
+    title: "Book a landing base for your first weeks",
+    summary: "Arrange short-term accommodation while you search for a long-term home.",
+    whyItMatters:
+      "A settled first base removes pressure from the housing search and early paperwork.",
+    prerequisites: ["move_budget"],
+    applicability: {},
+    officialSource: null,
+    setupCost: {
+      minAed: 3000,
+      maxAed: 12000,
+      note: "A planning range for the first two to four weeks.",
+    },
+    serviceType: "Short-stay accommodation",
   },
   {
     id: "entry_residency_process",
@@ -81,6 +169,15 @@ const definitions: StepDefinition[] = [
     prerequisites: ["residency_route", "document_attestation"],
     applicability: { stages: ["exploring", "preparing"] },
     officialSource: official("GDRFA Dubai", "https://gdrfad.gov.ae/en"),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+      { key: "passport_photos", label: "Recent passport photos" },
+    ],
+    setupCost: {
+      minAed: 2000,
+      maxAed: 8000,
+      note: "One adult; varies by route, sponsor, and processing speed.",
+    },
     serviceType: null,
   },
   {
@@ -98,6 +195,14 @@ const definitions: StepDefinition[] = [
       "UAE Government",
       "https://u.ae/en/information-and-services/visa-and-emirates-id/Visa-information/general-provisions-for-the-residence-visa",
     ),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+    ],
+    setupCost: {
+      minAed: 500,
+      maxAed: 1500,
+      note: "Standard versus expedited processing differ.",
+    },
     serviceType: null,
   },
   {
@@ -114,6 +219,14 @@ const definitions: StepDefinition[] = [
       "ICP",
       "https://icp.gov.ae/en/services/interactive-services/",
     ),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+    ],
+    setupCost: {
+      minAed: 300,
+      maxAed: 1200,
+      note: "Depends on visa duration and processing tier.",
+    },
     serviceType: null,
   },
   {
@@ -130,6 +243,11 @@ const definitions: StepDefinition[] = [
       "Dubai Health Authority",
       "https://dha.gov.ae/en/dubai-health-insurance-corporation",
     ),
+    setupCost: {
+      minAed: 1500,
+      maxAed: 10000,
+      note: "Annual premiums vary widely by plan and coverage.",
+    },
     serviceType: "Health insurance",
   },
   {
@@ -143,6 +261,11 @@ const definitions: StepDefinition[] = [
     prerequisites: ["neighborhood_shortlist"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 8000,
+      maxAed: 40000,
+      note: "First payments often include a refundable deposit and an agency fee; totals scale with rent.",
+    },
     serviceType: "Licensed real-estate brokerage",
   },
   {
@@ -159,6 +282,9 @@ const definitions: StepDefinition[] = [
       "Dubai Land Department",
       "https://dubailand.gov.ae/media/wzfpke5h/tenancyguideen.pdf",
     ),
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+    ],
     serviceType: "Tenancy review",
   },
   {
@@ -176,6 +302,15 @@ const definitions: StepDefinition[] = [
       "Dubai Land Department",
       "https://dubailand.gov.ae/en/eservices/register-renew-ejari-contract/",
     ),
+    requiredDocuments: [
+      { key: "signed_tenancy_contract", label: "Signed tenancy contract" },
+      { key: "emirates_id_card", label: "Emirates ID card" },
+    ],
+    setupCost: {
+      minAed: 100,
+      maxAed: 300,
+      note: "Registration through approved channels.",
+    },
     serviceType: null,
   },
   {
@@ -192,6 +327,14 @@ const definitions: StepDefinition[] = [
       "DEWA",
       "https://www.dewa.gov.ae/en/about-us/service-guide/consumer-services/move-in",
     ),
+    requiredDocuments: [
+      { key: "ejari_certificate", label: "Ejari registration certificate" },
+    ],
+    setupCost: {
+      minAed: 2000,
+      maxAed: 4500,
+      note: "Connection deposit and activation; apartments and villas differ.",
+    },
     serviceType: null,
   },
   {
@@ -207,6 +350,11 @@ const definitions: StepDefinition[] = [
       preference: { key: "propertyRequiresDistrictCooling", value: true },
     },
     officialSource: null,
+    setupCost: {
+      minAed: 1000,
+      maxAed: 3500,
+      note: "Provider deposits and connection fees vary by building.",
+    },
     serviceType: "District-cooling activation",
   },
   {
@@ -220,6 +368,11 @@ const definitions: StepDefinition[] = [
     prerequisites: ["entry_residency_process"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 100,
+      maxAed: 500,
+      note: "SIM and first plan payment.",
+    },
     serviceType: "Licensed telecom provider",
   },
   {
@@ -233,6 +386,11 @@ const definitions: StepDefinition[] = [
     prerequisites: ["tenancy_review"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 300,
+      maxAed: 1500,
+      note: "Installation and first month; offers vary by building.",
+    },
     serviceType: "Licensed telecom provider",
   },
   {
@@ -246,6 +404,20 @@ const definitions: StepDefinition[] = [
     prerequisites: ["emirates_id"],
     applicability: {},
     officialSource: null,
+    requiredDocuments: [
+      { key: "passport", label: "Valid passport" },
+      { key: "residence_visa", label: "Residence visa" },
+      { key: "emirates_id_card", label: "Emirates ID card" },
+      {
+        key: "salary_certificate",
+        label: "Salary certificate or proof of income",
+      },
+    ],
+    setupCost: {
+      minAed: 0,
+      maxAed: 500,
+      note: "Most accounts are free to open; some tiers carry fees.",
+    },
     serviceType: "UAE-licensed bank",
   },
   {
@@ -288,6 +460,61 @@ const definitions: StepDefinition[] = [
       "Roads and Transport Authority",
       "https://www.rta.ae/wps/portal/rta/ae/home/rta-services/service-details?serviceId=617",
     ),
+    requiredDocuments: [
+      { key: "home_country_licence", label: "Home-country driving licence" },
+      { key: "emirates_id_card", label: "Emirates ID card" },
+    ],
+    setupCost: {
+      minAed: 1000,
+      maxAed: 5000,
+      note: "A direct transfer and a full training course differ greatly.",
+    },
+    serviceType: null,
+  },
+  {
+    id: "nol_card",
+    milestoneKey: "money_mobility",
+    phase: "first_month",
+    category: "money_mobility",
+    title: "Get a Nol card for public transport",
+    summary: "Use one card across the metro, trams, buses, and water transport.",
+    whyItMatters:
+      "Public transport keeps you mobile while longer-term transport choices settle.",
+    prerequisites: ["mobility_choice"],
+    applicability: {},
+    officialSource: official(
+      "Roads and Transport Authority",
+      "https://www.rta.ae/wps/portal/rta/ae/public-transport/nol",
+      verifiedJul26,
+    ),
+    setupCost: {
+      minAed: 25,
+      maxAed: 100,
+      note: "Card cost plus an initial balance.",
+    },
+    serviceType: null,
+  },
+  {
+    id: "salik_toll",
+    milestoneKey: "money_mobility",
+    phase: "first_month",
+    category: "money_mobility",
+    title: "Set up road-toll coverage before driving",
+    summary: "Understand how Dubai's automatic toll gates connect to your vehicle.",
+    whyItMatters:
+      "Registered toll coverage avoids fines once you drive your own or a rented car.",
+    prerequisites: ["mobility_choice"],
+    applicability: { preference: { key: "wantsToDrive", value: true } },
+    officialSource: official(
+      "UAE Government",
+      "https://u.ae/en/information-and-services/transportation",
+      verifiedJul26,
+    ),
+    setupCost: {
+      minAed: 100,
+      maxAed: 400,
+      note: "Tag registration and an opening toll balance.",
+    },
     serviceType: null,
   },
   {
@@ -305,6 +532,27 @@ const definitions: StepDefinition[] = [
       "UAE Government",
       "https://u.ae/en/information-and-services/visa-and-emirates-id/Visa-information/general-provisions-for-the-residence-visa",
     ),
+    requiredDocuments: [
+      {
+        key: "attested_marriage_certificate",
+        label: "Attested marriage certificate",
+      },
+      {
+        key: "attested_birth_certificates",
+        label: "Attested children's birth certificates",
+        note: "One for each sponsored child.",
+      },
+      { key: "ejari_certificate", label: "Ejari registration certificate" },
+      {
+        key: "salary_certificate",
+        label: "Salary certificate or proof of income",
+      },
+    ],
+    setupCost: {
+      minAed: 2500,
+      maxAed: 8000,
+      note: "Per sponsored family member; varies by route.",
+    },
     serviceType: "Licensed immigration support",
   },
   {
@@ -323,10 +571,73 @@ const definitions: StepDefinition[] = [
     ),
     serviceType: "School-admissions support",
   },
+  {
+    id: "school_enrollment",
+    milestoneKey: "family_arrival",
+    phase: "feeling_home",
+    category: "family_daily_life",
+    title: "Complete the school enrollment",
+    summary: "Confirm places, submit documents, and plan the first school days.",
+    whyItMatters:
+      "Enrollment closes the loop between housing choice, documents, and daily routine.",
+    prerequisites: ["school_preparation", "housing_search"],
+    applicability: { minimumChildren: 1 },
+    officialSource: official(
+      "KHDA",
+      "https://web.khda.gov.ae/en/education-directory/schools",
+    ),
+    requiredDocuments: [
+      {
+        key: "attested_birth_certificates",
+        label: "Attested children's birth certificates",
+      },
+      { key: "immunization_records", label: "Children's immunization records" },
+      { key: "school_reports", label: "Previous school reports" },
+    ],
+    setupCost: {
+      minAed: 500,
+      maxAed: 2000,
+      note: "Application and registration fees only - tuition varies by school and is not included.",
+    },
+    serviceType: "School-admissions support",
+  },
+  {
+    id: "dependents_health_insurance",
+    milestoneKey: "family_arrival",
+    phase: "feeling_home",
+    category: "family_daily_life",
+    title: "Cover every family member with health insurance",
+    summary: "Arrange compliant coverage for each sponsored family member.",
+    whyItMatters:
+      "Dependent residence processing generally expects valid health coverage.",
+    prerequisites: ["family_sponsorship"],
+    applicability: { marriedOnly: true },
+    officialSource: official(
+      "Dubai Health Authority",
+      "https://dha.gov.ae/en/dubai-health-insurance-corporation",
+      verifiedJul26,
+    ),
+    serviceType: "Health insurance",
+  },
+  {
+    id: "community_belonging",
+    milestoneKey: "feeling_at_home",
+    phase: "feeling_home",
+    category: "family_daily_life",
+    title: "Build your Dubai routines and community",
+    summary:
+      "Explore your neighborhood, find your regular places, and meet people.",
+    whyItMatters:
+      "Settling ends when the city feels familiar, not when the paperwork does.",
+    prerequisites: ["mobility_choice"],
+    applicability: {},
+    officialSource: null,
+    serviceType: null,
+  },
 ];
 
 export const dubaiPack = destinationPackSchema.parse({
   destinationCode: "AE-DXB",
-  version: "2026-07-20.1",
+  version: "2026-07-26.1",
   definitions,
 });
