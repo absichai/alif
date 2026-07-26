@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { MilestoneDetail } from "@/components/journey/milestone-detail";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { getJourney } from "@/features/journey/journey-service";
 
 export default async function MilestonePage({
@@ -18,7 +18,7 @@ export default async function MilestonePage({
   const result = await getJourney(
     new NeonJourneyRepository(),
     userId,
-    dubaiPack,
+    getDestinationPack(),
   );
   if (!result) redirect("/start");
   const milestone = result.plan.milestones.find((item) => item.key === id);

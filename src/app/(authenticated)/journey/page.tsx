@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { JourneyStream } from "@/components/journey/journey-stream";
 import { NextStepCard } from "@/components/journey/next-step-card";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { getJourney } from "@/features/journey/journey-service";
 
 export default async function JourneyPage() {
@@ -13,7 +13,7 @@ export default async function JourneyPage() {
   const result = await getJourney(
     new NeonJourneyRepository(),
     userId,
-    dubaiPack,
+    getDestinationPack(),
   );
   if (!result) redirect("/start");
 

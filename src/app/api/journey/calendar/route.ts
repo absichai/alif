@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import {
   buildJourneyCalendar,
   nextMonday,
@@ -13,7 +13,7 @@ export async function GET() {
   const { userId } = await auth();
   if (!userId) return apiError(401, "UNAUTHENTICATED", "Please sign in.");
 
-  const journey = await getJourney(new NeonJourneyRepository(), userId, dubaiPack);
+  const journey = await getJourney(new NeonJourneyRepository(), userId, getDestinationPack());
   if (!journey) {
     return apiError(404, "JOURNEY_NOT_FOUND", "Create a journey first.");
   }

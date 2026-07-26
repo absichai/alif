@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { NeonDocumentRepository } from "@/db/repositories/neon-document-repository";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { collectRequiredDocuments, documentStatusSchema } from "@/features/documents/document-readiness";
 import { getJourney } from "@/features/journey/journey-service";
 import { apiError } from "@/lib/http-errors";
@@ -30,7 +30,7 @@ export async function PATCH(
   }
 
   const { key } = await context.params;
-  const journey = await getJourney(new NeonJourneyRepository(), userId, dubaiPack);
+  const journey = await getJourney(new NeonJourneyRepository(), userId, getDestinationPack());
   if (!journey) {
     return apiError(404, "JOURNEY_NOT_FOUND", "Create a journey first.");
   }

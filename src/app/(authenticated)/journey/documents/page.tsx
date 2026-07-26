@@ -5,7 +5,7 @@ import Link from "next/link";
 import { DocumentStatusControl } from "@/components/documents/document-status-control";
 import { NeonDocumentRepository } from "@/db/repositories/neon-document-repository";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import {
   collectRequiredDocuments,
   mergeDocumentStatuses,
@@ -16,7 +16,7 @@ export default async function DocumentsPage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const journey = await getJourney(new NeonJourneyRepository(), userId, dubaiPack);
+  const journey = await getJourney(new NeonJourneyRepository(), userId, getDestinationPack());
   if (!journey) redirect("/start");
 
   const required = collectRequiredDocuments(journey.plan);

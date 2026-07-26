@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { buildJourney } from "@/features/journey/journey-engine";
 import { applyProfilePatch } from "@/features/profile/profile-schema";
 import { apiError } from "@/lib/http-errors";
@@ -75,7 +75,7 @@ export async function POST(
   }
   const nextPlan = buildJourney(
     patched.data,
-    dubaiPack,
+    getDestinationPack(),
     new Set(stored.completedDefinitionIds),
   );
 

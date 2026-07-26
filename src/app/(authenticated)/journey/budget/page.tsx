@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import {
   buildBudgetSummary,
   formatAedRange,
@@ -23,7 +23,7 @@ export default async function BudgetPage() {
   const { userId } = await auth();
   if (!userId) redirect("/sign-in");
 
-  const journey = await getJourney(new NeonJourneyRepository(), userId, dubaiPack);
+  const journey = await getJourney(new NeonJourneyRepository(), userId, getDestinationPack());
   if (!journey) redirect("/start");
 
   const summary = buildBudgetSummary(journey.plan);

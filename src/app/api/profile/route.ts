@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { updateProfile } from "@/features/journey/journey-service";
 import { profilePatchSchema } from "@/features/profile/profile-schema";
 import { apiError } from "@/lib/http-errors";
@@ -28,7 +28,7 @@ export async function PATCH(request: Request) {
       new NeonJourneyRepository(),
       userId,
       patch.data,
-      dubaiPack,
+      getDestinationPack(),
     );
     if (result.outcome === "not_found") {
       return apiError(404, "JOURNEY_NOT_FOUND", "Create a journey first.");
