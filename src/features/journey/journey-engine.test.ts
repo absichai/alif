@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { dubaiPack } from "@/data/destinations/dubai/pack";
 import type { RelocationProfile } from "@/features/profile/profile-schema";
 
-import { buildJourney } from "./journey-engine";
+import { buildJourney, unlockedBy } from "./journey-engine";
 
 const baseProfile: RelocationProfile = {
   destinationCode: "AE-DXB",
@@ -57,5 +57,62 @@ describe("buildJourney", () => {
     expect(first.stepsById.residency_route?.state).toBe("current");
     expect(next.stepsById.residency_route?.state).toBe("completed");
     expect(next.stepsById.move_budget?.state).toBe("current");
+  });
+
+  it("lists the steps a completion unlocks", () => {
+    const plan = buildJourney(baseProfile, dubaiPack, new Set());
+    const unlocked = unlockedBy(plan, "emirates_id").map((step) => step.id);
+
+    expect(unlocked).toContain("bank_account");
+    expect(unlocked).toContain("ejari");
+    expect(unlockedBy(plan, "school_preparation")).toHaveLength(0);
+  });
+
+  it("filters steps by stage applicability", () => {
+    const arrived = buildJourney(
+      { ...baseProfile, stage: "arrived" },
+      dubaiPack,
+      new Set(),
+    );
+
+    expect(arrived.stepIds).not.toContain("entry_residency_process");
+    expect(
+      buildJourney(baseProfile, dubaiPack, new Set()).stepIds,
+    ).toContain("entry_residency_process");
+  });
+
+  it("keeps prerequisite chains intact when a step filters out", () => {
+    const arrived = buildJourney(
+      { ...baseProfile, stage: "arrived" },
+      dubaiPack,
+      new Set(),
+    );
+    const medical = arrived.stepsById.medical_biometrics;
+
+    expect(medical).toBeDefined();
+    expect(medical?.blockedBy).not.toContain("entry_residency_process");
+  });
+
+  it("rejects packs with dependency cycles", () => {
+    const cyclic = {
+      destinationCode: "AE-DXB",
+      version: "test",
+      definitions: [
+        {
+          ...dubaiPack.definitions[0]!,
+          id: "step_a",
+          prerequisites: ["step_b"],
+        },
+        {
+          ...dubaiPack.definitions[0]!,
+          id: "step_b",
+          prerequisites: ["step_a"],
+        },
+      ],
+    };
+
+    expect(() => buildJourney(baseProfile, cyclic, new Set())).toThrow(
+      /dependency cycle/,
+    );
   });
 });

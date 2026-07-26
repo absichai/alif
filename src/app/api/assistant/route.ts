@@ -2,7 +2,7 @@ import { auth } from "@clerk/nextjs/server";
 import { z } from "zod";
 
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { answerJourneyQuestion } from "@/features/assistant/assistant-service";
 import { OpenAIAssistantModel } from "@/features/assistant/openai-assistant-model";
 import { getServerEnvironment } from "@/lib/env";
@@ -62,7 +62,7 @@ export async function POST(request: Request) {
       new OpenAIAssistantModel(),
       userId,
       body.data.question,
-      dubaiPack,
+      getDestinationPack(),
     );
     const encoder = new TextEncoder();
     const stream = new ReadableStream({

@@ -2,9 +2,9 @@ import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 import { DeleteProfileButton } from "@/components/profile/delete-profile-button";
-import { ProfileSummary } from "@/components/profile/profile-summary";
+import { ProfileEditor } from "@/components/profile/profile-editor";
 import { NeonJourneyRepository } from "@/db/repositories/neon-journey-repository";
-import { dubaiPack } from "@/data/destinations/dubai/pack";
+import { getDestinationPack } from "@/data/destinations/registry";
 import { getJourney } from "@/features/journey/journey-service";
 
 export default async function ProfilePage() {
@@ -13,7 +13,7 @@ export default async function ProfilePage() {
   const journey = await getJourney(
     new NeonJourneyRepository(),
     userId,
-    dubaiPack,
+    getDestinationPack(),
   );
   if (!journey) redirect("/start");
 
@@ -26,7 +26,7 @@ export default async function ProfilePage() {
       <p className="mt-3 text-[var(--muted)]">
         ALIF uses only these details to personalize your Dubai journey.
       </p>
-      <ProfileSummary profile={journey.stored.profile} />
+      <ProfileEditor profile={journey.stored.profile} />
       <DeleteProfileButton />
     </main>
   );

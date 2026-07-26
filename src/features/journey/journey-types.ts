@@ -48,6 +48,7 @@ export const stepDefinitionSchema = z.object({
             "wantsToDrive",
             "needsSchools",
             "propertyRequiresDistrictCooling",
+            "hasPets",
           ]),
           value: z.boolean(),
         })
@@ -62,6 +63,26 @@ export const stepDefinitionSchema = z.object({
     })
     .nullable(),
   serviceType: z.string().nullable().default(null),
+  requiredDocuments: z
+    .array(
+      z.object({
+        key: z.string().regex(/^[a-z0-9_]+$/),
+        label: z.string().min(3),
+        note: z.string().optional(),
+      }),
+    )
+    .default([]),
+  setupCost: z
+    .object({
+      minAed: z.number().int().min(0),
+      maxAed: z.number().int().min(0),
+      note: z.string().optional(),
+    })
+    .refine((cost) => cost.maxAed >= cost.minAed, {
+      message: "maxAed must be at least minAed",
+    })
+    .nullable()
+    .default(null),
 });
 
 export const destinationPackSchema = z.object({
@@ -71,6 +92,7 @@ export const destinationPackSchema = z.object({
 });
 
 export type StepDefinition = z.infer<typeof stepDefinitionSchema>;
+export type StepDefinitionInput = z.input<typeof stepDefinitionSchema>;
 export type DestinationPack = z.infer<typeof destinationPackSchema>;
 export type JourneyStepState = "completed" | "current" | "available" | "blocked";
 

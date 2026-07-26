@@ -25,6 +25,7 @@ export const profilePreferencesSchema = z.object({
   wantsToDrive: z.boolean().optional(),
   needsSchools: z.boolean().optional(),
   propertyRequiresDistrictCooling: z.boolean().optional(),
+  hasPets: z.boolean().optional(),
 });
 
 export const profileDraftSchema = z.object({
@@ -71,4 +72,28 @@ export function getMissingProfileFields(
 
 export function finalizeProfile(draft: RelocationProfileDraft) {
   return relocationProfileSchema.safeParse(draft);
+}
+
+export const profilePatchSchema = z
+  .object({
+    stage: relocationStageSchema,
+    moveTimeframe: z.string().trim().min(1).max(120),
+    household: householdSchema,
+    residencyPath: residencyPathSchema,
+    passportCountry: z.string().trim().min(2).max(80),
+    incomeRange: incomeRangeSchema.nullable(),
+    preferences: profilePreferencesSchema,
+  })
+  .partial()
+  .refine((patch) => Object.keys(patch).length > 0, {
+    message: "At least one profile field is required",
+  });
+
+export type RelocationProfilePatch = z.infer<typeof profilePatchSchema>;
+
+export function applyProfilePatch(
+  profile: RelocationProfile,
+  patch: RelocationProfilePatch,
+) {
+  return relocationProfileSchema.safeParse({ ...profile, ...patch });
 }

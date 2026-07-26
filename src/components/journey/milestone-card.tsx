@@ -55,6 +55,13 @@ export function MilestoneCard({ milestone }: { milestone: JourneyMilestone }) {
             </span>
             <span className={step.state === "blocked" ? "text-[var(--muted)]" : ""}>
               {step.title}
+              <span className="sr-only">
+                {step.state === "completed"
+                  ? " (completed)"
+                  : step.state === "blocked"
+                    ? " (waiting on earlier steps)"
+                    : ""}
+              </span>
             </span>
           </li>
         ))}

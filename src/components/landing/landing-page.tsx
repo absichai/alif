@@ -68,12 +68,20 @@ export function LandingPage() {
             Tell ALIF where you are starting. Get a personal journey from
             considering Dubai to feeling at home.
           </p>
-          <Link
-            className="mt-8 inline-flex min-h-12 items-center gap-2 rounded-xl bg-[var(--oasis)] px-6 py-3 font-extrabold text-white transition hover:-translate-y-0.5"
-            href="/start"
-          >
-            Build my Dubai journey <ArrowRight aria-hidden size={18} />
-          </Link>
+          <div className="mt-8 flex flex-wrap items-center gap-4">
+            <Link
+              className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[var(--oasis)] px-6 py-3 font-extrabold text-white transition hover:-translate-y-0.5"
+              href="/start"
+            >
+              Build my Dubai journey <ArrowRight aria-hidden size={18} />
+            </Link>
+            <a
+              className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-5 py-3 font-bold text-[var(--oasis)]"
+              href="#how-it-works"
+            >
+              See how it works
+            </a>
+          </div>
           <p className="mt-4 flex items-center gap-2 text-sm text-[var(--muted)]">
             <Check aria-hidden className="text-[var(--success)]" size={17} />
             About two minutes. No account until your journey is ready.
@@ -126,7 +134,42 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="border-y border-[var(--border)] bg-white">
+      <section className="border-y border-[var(--border)] bg-white" id="how-it-works">
+        <div className="mx-auto max-w-6xl px-6 py-16">
+          <p className="text-xs font-extrabold uppercase tracking-[0.15em] text-[var(--journey-text)]">
+            How it works
+          </p>
+          <h2 className="mt-2 text-3xl font-extrabold">
+            Three steps to one clear journey
+          </h2>
+          <ol className="mt-8 grid gap-8 md:grid-cols-3">
+            {[
+              [
+                "Describe your situation",
+                "Tell your story in your own words, or answer five focused questions. Income stays optional.",
+              ],
+              [
+                "Get your personal journey",
+                "ALIF selects and orders the chapters that apply to your household, route, and timing.",
+              ],
+              [
+                "Move forward with confidence",
+                "Complete steps to unlock the next ones, track documents and budget, and ask ALIF when plans change.",
+              ],
+            ].map(([title, copy], index) => (
+              <li key={title}>
+                <span className="grid size-11 place-items-center rounded-full bg-[var(--journey)] font-extrabold text-white">
+                  {index + 1}
+                </span>
+                <h3 className="mt-4 text-xl font-extrabold">{title}</h3>
+                <p className="mt-2 leading-7 text-[var(--muted)]">{copy}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="bg-[var(--sand)]">
         <div className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-3">
           {promises.map(({ icon: Icon, title, copy }) => (
             <article key={title}>
@@ -139,6 +182,17 @@ export function LandingPage() {
           ))}
         </div>
       </section>
+
+      <footer className="border-t border-[var(--border)] bg-white">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 text-sm text-[var(--muted)] sm:flex-row sm:items-center sm:justify-between">
+          <AlifLogo compact />
+          <p className="max-w-xl leading-6">
+            ALIF is guidance, not legal, immigration, financial, medical, or
+            real-estate advice. Government procedures always link to the
+            responsible authority — confirm requirements there before acting.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 }

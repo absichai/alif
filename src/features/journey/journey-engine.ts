@@ -20,6 +20,7 @@ const milestoneTitles: Record<string, string> = {
   daily_foundations: "Create your daily foundations",
   money_mobility: "Set up money and mobility",
   family_arrival: "Help your family feel at home",
+  feeling_at_home: "Feel genuinely at home",
 };
 
 function applies(definition: StepDefinition, profile: RelocationProfile): boolean {
@@ -67,6 +68,13 @@ function assertValidDependencies(definitions: StepDefinition[]): void {
   }
 
   definitions.forEach((definition) => visit(definition.id));
+}
+
+export function unlockedBy(plan: JourneyPlan, definitionId: string): JourneyStep[] {
+  return plan.stepIds.flatMap((id) => {
+    const step = plan.stepsById[id];
+    return step && step.prerequisites.includes(definitionId) ? [step] : [];
+  });
 }
 
 export function buildJourney(

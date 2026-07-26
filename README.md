@@ -26,8 +26,14 @@ ALIF models settling as a journey:
 - no personalized journey is revealed before account creation;
 - deterministic selection and ordering from a curated Dubai pack;
 - official links for government actions and visible source-verification dates;
-- milestone progress that unlocks dependent chapters;
-- a grounded assistant that explains the selected journey;
+- milestone progress that unlocks dependent chapters, with named blockers
+  and "unlocks" shown on every step;
+- a "next meaningful step" nudge and a weekly-paced calendar (.ics) export;
+- document readiness tracking aggregated from the personalized journey;
+- a setup-budget planner built from pack-owned planning ranges;
+- profile editing that rebuilds the journey while preserving completed steps;
+- a grounded assistant that explains the journey and proposes profile
+  updates as expiring, confirmable changes with a computed downstream effect;
 - explicit confirmation before any assistant-proposed change;
 - user-controlled profile visibility and deletion.
 
@@ -107,6 +113,9 @@ Authenticated browser tests additionally require Clerk test credentials,
 `E2E_CLERK_USER_EMAIL`, a migrated Neon database, and an OpenAI key. They do not
 use an authentication bypass.
 
+In sandboxes where Playwright cannot download browsers, point the suite at a
+pre-installed build with `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/path/to/chrome`.
+
 ## Database
 
 Generate a migration after a schema change:
@@ -131,9 +140,12 @@ Dubai definitions live in
 
 - applicability rules and prerequisite IDs;
 - a phase, milestone, and category;
-- explanatory copy and partner service type when relevant;
+- explanatory copy and a suggested service type when relevant;
 - an official authority URL for government actions;
-- a `lastVerifiedAt` date.
+- a `lastVerifiedAt` date;
+- optional `requiredDocuments` (feeds the document readiness tracker);
+- an optional `setupCost` planning range in AED (feeds the budget page;
+  estimates only, never presented as official fees).
 
 When an official process changes, update the definition, refresh its
 verification date, increment the pack version, and run the pack and journey
