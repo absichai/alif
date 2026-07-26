@@ -56,4 +56,10 @@ export interface JourneyRepository {
     profile: RelocationProfile;
     nextPlan: JourneyPlan;
   }): Promise<StoredJourney>;
+  replaceProfileAndPlan(input: {
+    clerkUserId: string;
+    expectedJourneyVersion: number;
+    profile: RelocationProfile;
+    nextPlan: JourneyPlan;
+  }): Promise<StoredJourney>;
 }

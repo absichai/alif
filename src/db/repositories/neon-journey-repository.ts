@@ -327,6 +327,72 @@ export class NeonJourneyRepository implements JourneyRepository {
     });
   }
 
+  async replaceProfileAndPlan(
+    input: Parameters<JourneyRepository["replaceProfileAndPlan"]>[0],
+  ): Promise<StoredJourney> {
+    const db = getDb();
+
+    await db.transaction(async (tx) => {
+      const [owned] = await tx
+        .select({
+          journeyId: journeys.id,
+          userId: users.id,
+          journeyVersion: journeys.version,
+        })
+        .from(journeys)
+        .innerJoin(users, eq(journeys.userId, users.id))
+        .where(
+          and(
+            eq(users.clerkUserId, input.clerkUserId),
+            eq(journeys.status, "active"),
+            eq(journeys.version, input.expectedJourneyVersion),
+          ),
+        )
+        .limit(1);
+
+      if (!owned) throw new Error("Journey changed before the profile update");
+
+      await tx
+        .update(relocationProfiles)
+        .set({
+          destinationCode: input.profile.destinationCode,
+          stage: input.profile.stage,
+          moveTimeframe: input.profile.moveTimeframe,
+          household: input.profile.household,
+          residencyPath: input.profile.residencyPath,
+          passportCountry: input.profile.passportCountry,
+          incomeRange: input.profile.incomeRange,
+          preferences: input.profile.preferences,
+          updatedAt: new Date(),
+        })
+        .where(eq(relocationProfiles.userId, owned.userId));
+
+      await tx
+        .delete(journeySteps)
+        .where(eq(journeySteps.journeyId, owned.journeyId));
+      const rows = toJourneyStepRows(owned.journeyId, input.nextPlan);
+      if (rows.length > 0) await tx.insert(journeySteps).values(rows);
+
+      await tx
+        .update(journeys)
+        .set({
+          version: owned.journeyVersion + 1,
+          destinationPackVersion: input.nextPlan.packVersion,
+          updatedAt: new Date(),
+        })
+        .where(
+          and(
+            eq(journeys.id, owned.journeyId),
+            eq(journeys.version, owned.journeyVersion),
+          ),
+        );
+    });
+
+    const stored = await this.findActiveByClerkUserId(input.clerkUserId);
+    if (!stored) throw new Error("Updated journey could not be loaded");
+    return stored;
+  }
+
   async applyResidencyPathProposal(
     input: Parameters<JourneyRepository["applyResidencyPathProposal"]>[0],
   ): Promise<StoredJourney> {
