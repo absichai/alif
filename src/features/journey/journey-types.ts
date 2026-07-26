@@ -72,6 +72,17 @@ export const stepDefinitionSchema = z.object({
       }),
     )
     .default([]),
+  setupCost: z
+    .object({
+      minAed: z.number().int().min(0),
+      maxAed: z.number().int().min(0),
+      note: z.string().optional(),
+    })
+    .refine((cost) => cost.maxAed >= cost.minAed, {
+      message: "maxAed must be at least minAed",
+    })
+    .nullable()
+    .default(null),
 });
 
 export const destinationPackSchema = z.object({

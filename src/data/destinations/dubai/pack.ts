@@ -80,6 +80,11 @@ const definitions: StepDefinitionInput[] = [
         note: "Commonly requested on employment residency routes.",
       },
     ],
+    setupCost: {
+      minAed: 500,
+      maxAed: 3000,
+      note: "Per-document attestation costs vary by issuing country and document type.",
+    },
     serviceType: null,
   },
   {
@@ -98,6 +103,11 @@ const definitions: StepDefinitionInput[] = [
       "https://www.dubaicustoms.gov.ae/en/Pages/default.aspx",
       verifiedJul26,
     ),
+    setupCost: {
+      minAed: 5000,
+      maxAed: 25000,
+      note: "Depends heavily on volume and sea versus air freight.",
+    },
     serviceType: "International moving and customs support",
   },
   {
@@ -122,6 +132,11 @@ const definitions: StepDefinitionInput[] = [
         label: "Pet vaccination records and health certificate",
       },
     ],
+    setupCost: {
+      minAed: 2000,
+      maxAed: 10000,
+      note: "Permits, vet work, and transport vary by animal and origin.",
+    },
     serviceType: "Pet relocation support",
   },
   {
@@ -136,6 +151,11 @@ const definitions: StepDefinitionInput[] = [
     prerequisites: ["move_budget"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 3000,
+      maxAed: 12000,
+      note: "A planning range for the first two to four weeks.",
+    },
     serviceType: "Short-stay accommodation",
   },
   {
@@ -153,6 +173,11 @@ const definitions: StepDefinitionInput[] = [
       { key: "passport", label: "Valid passport" },
       { key: "passport_photos", label: "Recent passport photos" },
     ],
+    setupCost: {
+      minAed: 2000,
+      maxAed: 8000,
+      note: "One adult; varies by route, sponsor, and processing speed.",
+    },
     serviceType: null,
   },
   {
@@ -173,6 +198,11 @@ const definitions: StepDefinitionInput[] = [
     requiredDocuments: [
       { key: "passport", label: "Valid passport" },
     ],
+    setupCost: {
+      minAed: 500,
+      maxAed: 1500,
+      note: "Standard versus expedited processing differ.",
+    },
     serviceType: null,
   },
   {
@@ -192,6 +222,11 @@ const definitions: StepDefinitionInput[] = [
     requiredDocuments: [
       { key: "passport", label: "Valid passport" },
     ],
+    setupCost: {
+      minAed: 300,
+      maxAed: 1200,
+      note: "Depends on visa duration and processing tier.",
+    },
     serviceType: null,
   },
   {
@@ -208,6 +243,11 @@ const definitions: StepDefinitionInput[] = [
       "Dubai Health Authority",
       "https://dha.gov.ae/en/dubai-health-insurance-corporation",
     ),
+    setupCost: {
+      minAed: 1500,
+      maxAed: 10000,
+      note: "Annual premiums vary widely by plan and coverage.",
+    },
     serviceType: "Health insurance",
   },
   {
@@ -221,6 +261,11 @@ const definitions: StepDefinitionInput[] = [
     prerequisites: ["neighborhood_shortlist"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 8000,
+      maxAed: 40000,
+      note: "First payments often include a refundable deposit and an agency fee; totals scale with rent.",
+    },
     serviceType: "Licensed real-estate brokerage",
   },
   {
@@ -261,6 +306,11 @@ const definitions: StepDefinitionInput[] = [
       { key: "signed_tenancy_contract", label: "Signed tenancy contract" },
       { key: "emirates_id_card", label: "Emirates ID card" },
     ],
+    setupCost: {
+      minAed: 100,
+      maxAed: 300,
+      note: "Registration through approved channels.",
+    },
     serviceType: null,
   },
   {
@@ -280,6 +330,11 @@ const definitions: StepDefinitionInput[] = [
     requiredDocuments: [
       { key: "ejari_certificate", label: "Ejari registration certificate" },
     ],
+    setupCost: {
+      minAed: 2000,
+      maxAed: 4500,
+      note: "Connection deposit and activation; apartments and villas differ.",
+    },
     serviceType: null,
   },
   {
@@ -295,6 +350,11 @@ const definitions: StepDefinitionInput[] = [
       preference: { key: "propertyRequiresDistrictCooling", value: true },
     },
     officialSource: null,
+    setupCost: {
+      minAed: 1000,
+      maxAed: 3500,
+      note: "Provider deposits and connection fees vary by building.",
+    },
     serviceType: "District-cooling activation",
   },
   {
@@ -308,6 +368,11 @@ const definitions: StepDefinitionInput[] = [
     prerequisites: ["entry_residency_process"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 100,
+      maxAed: 500,
+      note: "SIM and first plan payment.",
+    },
     serviceType: "Licensed telecom provider",
   },
   {
@@ -321,6 +386,11 @@ const definitions: StepDefinitionInput[] = [
     prerequisites: ["tenancy_review"],
     applicability: {},
     officialSource: null,
+    setupCost: {
+      minAed: 300,
+      maxAed: 1500,
+      note: "Installation and first month; offers vary by building.",
+    },
     serviceType: "Licensed telecom provider",
   },
   {
@@ -343,6 +413,11 @@ const definitions: StepDefinitionInput[] = [
         label: "Salary certificate or proof of income",
       },
     ],
+    setupCost: {
+      minAed: 0,
+      maxAed: 500,
+      note: "Most accounts are free to open; some tiers carry fees.",
+    },
     serviceType: "UAE-licensed bank",
   },
   {
@@ -389,6 +464,11 @@ const definitions: StepDefinitionInput[] = [
       { key: "home_country_licence", label: "Home-country driving licence" },
       { key: "emirates_id_card", label: "Emirates ID card" },
     ],
+    setupCost: {
+      minAed: 1000,
+      maxAed: 5000,
+      note: "A direct transfer and a full training course differ greatly.",
+    },
     serviceType: null,
   },
   {
@@ -407,6 +487,11 @@ const definitions: StepDefinitionInput[] = [
       "https://www.rta.ae/wps/portal/rta/ae/public-transport/nol",
       verifiedJul26,
     ),
+    setupCost: {
+      minAed: 25,
+      maxAed: 100,
+      note: "Card cost plus an initial balance.",
+    },
     serviceType: null,
   },
   {
@@ -425,6 +510,11 @@ const definitions: StepDefinitionInput[] = [
       "https://u.ae/en/information-and-services/transportation",
       verifiedJul26,
     ),
+    setupCost: {
+      minAed: 100,
+      maxAed: 400,
+      note: "Tag registration and an opening toll balance.",
+    },
     serviceType: null,
   },
   {
@@ -458,6 +548,11 @@ const definitions: StepDefinitionInput[] = [
         label: "Salary certificate or proof of income",
       },
     ],
+    setupCost: {
+      minAed: 2500,
+      maxAed: 8000,
+      note: "Per sponsored family member; varies by route.",
+    },
     serviceType: "Licensed immigration support",
   },
   {
@@ -499,6 +594,11 @@ const definitions: StepDefinitionInput[] = [
       { key: "immunization_records", label: "Children's immunization records" },
       { key: "school_reports", label: "Previous school reports" },
     ],
+    setupCost: {
+      minAed: 500,
+      maxAed: 2000,
+      note: "Application and registration fees only - tuition varies by school and is not included.",
+    },
     serviceType: "School-admissions support",
   },
   {
