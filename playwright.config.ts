@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+
 export default defineConfig({
   testDir: "./tests",
   retries: process.env.CI ? 2 : 0,
@@ -7,6 +9,9 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:3107",
     trace: "on-first-retry",
+    ...(chromiumExecutablePath
+      ? { launchOptions: { executablePath: chromiumExecutablePath } }
+      : {}),
   },
   webServer: {
     command: "npm run dev -- --hostname localhost --port 3107",
