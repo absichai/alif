@@ -37,6 +37,7 @@ export default function GuidedOnboardingPage() {
   const { state, setGuidedProfile } = useOnboardingFlow("guided");
   const [skipIncome, setSkipIncome] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
+  const [relationship, setRelationship] = useState("single");
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -122,7 +123,13 @@ export default function GuidedOnboardingPage() {
             <legend className="font-bold">3. Who will be making the move?</legend>
             <label>
               Relationship status
-              <select className={fieldClass} name="relationshipStatus" required>
+              <select
+                className={fieldClass}
+                name="relationshipStatus"
+                onChange={(event) => setRelationship(event.target.value)}
+                required
+                value={relationship}
+              >
                 <option value="single">Single</option>
                 <option value="married">Married</option>
               </select>
@@ -139,13 +146,15 @@ export default function GuidedOnboardingPage() {
                 type="number"
               />
             </label>
-            <label>
-              If moving as a family, will everyone move together?
-              <select className={fieldClass} name="movingTogether">
-                <option value="together">Together</option>
-                <option value="staggered">At different times</option>
-              </select>
-            </label>
+            {relationship === "married" ? (
+              <label>
+                Will everyone move together?
+                <select className={fieldClass} name="movingTogether">
+                  <option value="together">Together</option>
+                  <option value="staggered">At different times</option>
+                </select>
+              </label>
+            ) : null}
           </fieldset>
 
           <label className="font-bold">

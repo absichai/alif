@@ -1,9 +1,9 @@
 import "server-only";
 
-import OpenAI from "openai";
 import { zodTextFormat } from "openai/helpers/zod";
 
 import { getServerEnvironment } from "@/lib/env";
+import { getOpenAIClient } from "@/lib/openai-client";
 
 import {
   assistantModelOutputSchema,
@@ -32,7 +32,7 @@ export class OpenAIAssistantModel implements AssistantModel {
     input: Parameters<AssistantModel["respond"]>[0],
   ): Promise<AssistantModelOutput> {
     const environment = getServerEnvironment();
-    const client = new OpenAI({ apiKey: environment.OPENAI_API_KEY });
+    const client = getOpenAIClient();
     const response = await client.responses.parse({
       model: environment.OPENAI_MODEL,
       reasoning: { effort: "low" },

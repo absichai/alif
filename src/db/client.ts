@@ -7,7 +7,16 @@ import { getServerEnvironment } from "@/lib/env";
 
 import * as schema from "./schema";
 
-export function getDb() {
+type Database = ReturnType<typeof createDb>;
+
+function createDb() {
   const { DATABASE_URL } = getServerEnvironment();
   return drizzle(neon(DATABASE_URL), { schema });
+}
+
+let cached: Database | null = null;
+
+export function getDb(): Database {
+  cached ??= createDb();
+  return cached;
 }
