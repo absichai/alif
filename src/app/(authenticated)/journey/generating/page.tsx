@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { GenerationProgress } from "@/components/journey/generation-progress";
@@ -13,8 +13,11 @@ export default function GeneratingJourneyPage() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const inFlight = useRef(false);
 
   const generate = useCallback(async () => {
+    if (inFlight.current) return;
+    inFlight.current = true;
     setError(null);
     const draft = readOnboardingDraft();
     try {
@@ -40,6 +43,8 @@ export default function GeneratingJourneyPage() {
           ? cause.message
           : "We could not create your journey yet. Please try again.",
       );
+    } finally {
+      inFlight.current = false;
     }
   }, [router]);
 

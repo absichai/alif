@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, gt } from "drizzle-orm";
+import { and, eq, gt, inArray } from "drizzle-orm";
 import { z } from "zod";
 
 import { getDb } from "@/db/client";
@@ -205,38 +205,38 @@ export class NeonJourneyRepository implements JourneyRepository {
       const requestedStep = input.nextPlan.stepsById[input.definitionId];
       if (!requestedStep) throw new Error(`Unknown journey step ${input.definitionId}`);
 
+      const idsByState = new Map<
+        (typeof requestedStep)["state"],
+        string[]
+      >();
+      for (const stepId of input.nextPlan.stepIds) {
+        const step = input.nextPlan.stepsById[stepId];
+        if (!step) throw new Error(`Missing plan step ${stepId}`);
+        const ids = idsByState.get(step.state) ?? [];
+        ids.push(stepId);
+        idsByState.set(step.state, ids);
+      }
+      for (const [state, ids] of idsByState) {
+        await tx
+          .update(journeySteps)
+          .set({ state })
+          .where(
+            and(
+              eq(journeySteps.journeyId, ownedJourney.id),
+              inArray(journeySteps.definitionId, ids),
+            ),
+          );
+      }
+
       await tx
         .update(journeySteps)
-        .set({
-          state: input.completed ? "completed" : requestedStep.state,
-          completedAt: input.completed ? new Date() : null,
-        })
+        .set({ completedAt: input.completed ? new Date() : null })
         .where(
           and(
             eq(journeySteps.journeyId, ownedJourney.id),
             eq(journeySteps.definitionId, input.definitionId),
           ),
         );
-
-      for (const stepId of input.nextPlan.stepIds) {
-        const step = input.nextPlan.stepsById[stepId];
-        if (!step) throw new Error(`Missing plan step ${stepId}`);
-        await tx
-          .update(journeySteps)
-          .set({
-            state: step.state,
-            completedAt:
-              step.state === "completed" && stepId === input.definitionId
-                ? new Date()
-                : undefined,
-          })
-          .where(
-            and(
-              eq(journeySteps.journeyId, ownedJourney.id),
-              eq(journeySteps.definitionId, stepId),
-            ),
-          );
-      }
 
       await tx
         .update(journeys)
