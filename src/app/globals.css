@@ -46,7 +46,7 @@ h3 {
   letter-spacing: -0.01em;
 }
 
-:focus-visible {
+:focus-visible:not([tabindex="-1"]) {
   outline: 3px solid var(--journey);
   outline-offset: 3px;
 }

@@ -35,7 +35,7 @@ export default function StartPage() {
             </span>
             <h2 className="mt-8 text-2xl font-bold">Guide me step by step</h2>
             <p className="mt-2 text-[var(--muted)]">
-              Answer five focused questions at your own pace.
+              Quick questions, one tap each. About two minutes.
             </p>
           </Card>
         </Link>

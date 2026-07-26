@@ -46,7 +46,7 @@ export default async function JourneyPage() {
             aria-valuemax={100}
             aria-valuemin={0}
             aria-valuenow={percent}
-            className="mt-2 h-2 overflow-hidden rounded-full bg-white"
+            className="mt-2 h-2 overflow-hidden rounded-full bg-[#e4e9f2]"
             role="progressbar"
           >
             <div
